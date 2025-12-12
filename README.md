@@ -1,6 +1,6 @@
-# 그림나래(Image to Story)
+# 그림나래(Image to Story-front)
 
-그림나래(Image-to-Story)는 업로드된 이미지를 분석하여 창의적인 동화를 생성하는 **프론트엔드(React)**입니다.
+그림나래(Image-to-Story-front)는 업로드된 이미지를 분석하여 창의적인 동화를 생성해주는 서비스의 **프론트엔드(React)**입니다.
 
 ---
 
