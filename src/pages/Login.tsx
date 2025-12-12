@@ -5,7 +5,8 @@ import { color } from "../theme";
 import { userNameAtom, userPasswordAtom } from "../state";
 import { useAtom } from "jotai";
 import backgroundImage from "../photos/loginbackground.png";
-import { API_BASE_URL } from "../config";
+import { authApi } from "../api/auth";
+import { User } from "../types/user";
 
 const Style = styled.div`
   display: flex;
@@ -101,7 +102,7 @@ const LinkContainer = styled.div`
 `;
 
 interface LoginProps {
-  setUser: (user: { name: string; id: string } | null) => void;
+  setUser: (user: User | null) => void;
 }
 
 const Login = ({ setUser }: LoginProps) => {
@@ -112,28 +113,19 @@ const Login = ({ setUser }: LoginProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
+      const data = await authApi.login(username, password);
+      setUser({
+        name: data.name,
+        id: data.username || username,
+        user_id: data.user_id
       });
-
-      if (response.ok) {
-        const user = await response.json();
-        setUser(user);
-        navigate("/");
-      } else {
-        alert("아이디 또는 비밀번호가 잘못되었습니다.");
-      }
+      navigate("/");
     } catch (error) {
       console.error('Error:', error);
-      alert('로그인에 실패했습니다. 서버 Error!');
+      alert("아이디 또는 비밀번호가 잘못되었습니다.");
     } finally {
       setLoading(false);
     }

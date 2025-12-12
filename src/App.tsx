@@ -3,11 +3,7 @@ import { Home, GetStarted, Introduce, Login, SignUp, Team, FindId, FindPw } from
 import { Header, Footer } from "./components";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
-
-interface User {
-  name: string;
-  id: string;
-}
+import { User } from "./types/user";
 
 const Style = styled.main`
   display: flex;
@@ -30,7 +26,7 @@ function App() {
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/team" element={<Team />} />
-            <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/get-started" element={<GetStarted user={user} />} />
             <Route path="/find-id" element={<FindId />} />
             <Route path="/find-pw" element={<FindPw />} />
             <Route path="*" element={<Navigate to="/" />} />

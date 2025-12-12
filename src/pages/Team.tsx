@@ -130,7 +130,7 @@ const Footer = styled.footer`
 const Team = () => {
   const teamMembers = [
     {
-      role: "AI, 백엔드 관리",
+      role: "AI, 백엔드",
       description: "임희진",
       image: user,
       githubLink: "https://github.com/limhuijin",
@@ -142,7 +142,7 @@ const Team = () => {
       githubLink: "https://github.com/ssong77",
     },
     {
-      role: "프론트엔드",
+      role: "프론트엔드, 백엔드",
       description: "허선진",
       image: user,
       githubLink: "https://github.com/HeoSeonJin0504",

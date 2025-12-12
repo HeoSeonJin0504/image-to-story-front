@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { color } from "../theme";
 import { useState } from "react";
 import backgroundImage from "../photos/signupbackground.png";
-import { API_BASE_URL } from "../config";
+import { authApi } from "../api/auth";
 
 const Style = styled.div`
   display: flex;
@@ -200,15 +200,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}check-duplicate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username }),
-      });
-
-      const data = await response.json();
+      const data = await authApi.checkDuplicate(username);
       if (data.exists) {
         alert("이미 있는 아이디입니다.");
         setIsDuplicate(true);
@@ -271,25 +263,13 @@ const SignUp = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password, name, email }),
-      });
-
-      if (response.ok) {
-        alert("회원가입이 완료되었습니다.");
-        navigate("/login");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.detail || "회원가입에 실패했습니다.");
-        alert("회원가입에 실패했습니다.");
-      }
+      await authApi.signup(username, password, name, email);
+      alert("회원가입이 완료되었습니다.");
+      navigate("/login");
     } catch (error) {
       console.error('Error:', error);
-      alert('서버 Error!');
+      setError(error instanceof Error ? error.message : "회원가입에 실패했습니다.");
+      alert("회원가입에 실패했습니다.");
     } finally {
       setLoading(false);
     }

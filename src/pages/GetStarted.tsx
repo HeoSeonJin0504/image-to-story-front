@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import backgroundImage from "../photos/getstartedbackground.png";
-import { API_BASE_URL } from "../config";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Container = styled.div`
   display: flex;
@@ -175,7 +176,11 @@ const Footer = styled.footer`
   }
 `;
 
-const GetStarted = () => {
+interface GetStartedProps {
+  user: { name: string; id: string; user_id: number } | null;
+}
+
+const GetStarted = ({ user }: GetStartedProps) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [storyTitle, setStoryTitle] = useState<string | null>(null);
@@ -200,16 +205,27 @@ const GetStarted = () => {
       return;
     }
 
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData();
     formData.append("file", selectedImage as Blob);
+    formData.append("user_id", user.user_id.toString());
 
     try {
-      const response = await fetch(`${API_BASE_URL}image-upload`, {
+      const response = await fetch(`${API_BASE_URL}/image-upload`, {
         method: "POST",
         body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error("이미지 업로드 실패");
+      }
+
       const result = await response.json();
       setStoryTitle(result.story_name);
       setStoryContent(result.story_content);
@@ -228,7 +244,7 @@ const GetStarted = () => {
     }
 
     try {
-      await fetch(`${API_BASE_URL}braille-generate`, {
+      await fetch(`${API_BASE_URL}/braille-generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -248,13 +264,19 @@ const GetStarted = () => {
       return;
     }
 
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", selectedImage as Blob);
     formData.append("story_title", storyTitle);
     formData.append("story_content", storyContent);
+    formData.append("user_id", user.user_id.toString());
 
     try {
-      const response = await fetch(`${API_BASE_URL}save-story`, {
+      const response = await fetch(`${API_BASE_URL}/save-story`, {
         method: "POST",
         body: formData,
       });

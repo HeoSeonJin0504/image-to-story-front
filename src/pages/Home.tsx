@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import backgroundImage from "../photos/homebackground.png";
+import { User } from "../types/user";
 
 const Style = styled.div`
   display: flex;
@@ -174,7 +175,7 @@ const Button = styled(NavLink)`
 `;
 
 interface HomeProps {
-  user: { name: string; id: string } | null;
+  user: User | null;
 }
 
 const Home = ({ user }: HomeProps) => {

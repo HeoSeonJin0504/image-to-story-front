@@ -2,6 +2,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useState } from "react";
 import logo from "../photos/logo.png";
+import { User } from "../types/user";
 
 const HeaderAnimation = keyframes` 
   from {
@@ -17,7 +18,7 @@ const HeaderAnimation = keyframes`
 const Style = styled.header`
   width: 100%;
   height: 70px;
-  padding: 0 10px;
+  padding: 0 40px;
   font-family: "DunggeunmisoR", Arial, sans-serif; /* 글꼴 설정 */
   font-weight: bold; /* 글꼴 굵게 설정 */
 
@@ -150,8 +151,8 @@ const DropdownButton = styled.button`
 `;
 
 interface HeaderProps {
-  user: { name: string; id: string } | null;
-  setUser: (user: { name: string; id: string } | null) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
 }
 
 const Header = ({ user, setUser }: HeaderProps) => {

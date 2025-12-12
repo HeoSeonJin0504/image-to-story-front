@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import backgroundImage from "../photos/introducebackground.png";
+import { User } from "../types/user";
 
 const Container = styled.div`
   display: flex;
@@ -137,7 +138,6 @@ const Button = styled(Link)`
     40% {
       transform: scale(1.15) rotate(0);
     }
-  }
 `;
 
 const StepContainer = styled.div`
@@ -179,7 +179,7 @@ const Footer = styled.footer`
 `;
 
 interface IntroduceProps {
-  user: { name: string; id: string } | null;
+  user: User | null;
 }
 
 const Introduce = ({ user }: IntroduceProps) => {
