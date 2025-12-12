@@ -1,7 +1,8 @@
 {
-  "name": "capstondesign",
+  "name": "image-to-story",
   "private": true,
   "version": "0.0.0",
+  "description": "그림을 업로드하면 동화를 생성하는 프로그램",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,19 +15,21 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "nanoid": "^3.3.8" 
   },
   "devDependencies": {
-    "@eslint/js": "^9.13.0",
+    "@eslint/js": "^9.26.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react-swc": "^3.5.0",
-    "eslint": "^9.13.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
+    "@vitejs/plugin-react-swc": "^3.7.2",
+    "eslint": "^9.26.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.14",
-    "globals": "^15.11.0",
-    "typescript": "~5.6.2",
-    "typescript-eslint": "^8.11.0",
-    "vite": "^5.4.10"
+    "globals": "^15.12.0",
+    "typescript": "~5.6.3",
+    "typescript-eslint": "^8.15.0",
+    "vite": "^6.1.7",
+    "js-yaml": "^4.1.0"
   }
 }
