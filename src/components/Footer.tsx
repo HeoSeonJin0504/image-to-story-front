@@ -34,10 +34,7 @@ const Style = styled.footer`
 const Footer = () => {
   return (
     <Style>
-      <p>@ 2024 물로이조. All rights reserved</p>
-      <p>
-        <Link to="/team">팀원 소개</Link>
-      </p>
+      <p>@ 2024 물로이조 (<Link to="/team">팀원 소개</Link>). All rights reserved</p>
     </Style>
   );
 };
