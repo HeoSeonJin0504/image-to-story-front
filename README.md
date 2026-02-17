@@ -12,13 +12,13 @@
 ## 주요 화면
 
 ### 홈 화면
-> 서비스 소개 및 시작 안내
+(./src/photos/screenshots/Home.png)
 
 ### 그림 업로드 및 동화 생성
-> 사진을 열고 동화 생성 버튼을 클릭하면 AI가 자동으로 동화를 생성합니다
+(./src/photos/screenshots/GetStarted.png)
 
 ### 마이페이지
-> 저장된 동화 목록을 카드 형식으로 확인하고, 클릭 시 상세 내용을 모달로 조회합니다
+(./src/photos/screenshots/MyPage.png)
 
 ## 🛠️ 기술 스택
 - **Framework**: React 18
