@@ -219,19 +219,19 @@ const Introduce = ({ user }: IntroduceProps) => {
         </StepContainer>
         <StepContainer>
           <RightDescription>
-            4. '그림 저장 및 동화 생성' 버튼을 클릭해 주세요.
+            4. '동화 생성' 버튼을 클릭해 주세요.
           </RightDescription>
           <Image src="src/photos/introduce/introduce4.png" />
         </StepContainer>
         <StepContainer>
           <RightDescription>
-            5. '동화 저장' 버튼을 클릭하면 동화 저장이 가능합니다.
+            5. '동화 저장' 버튼을 클릭하면 이미지 및 동화 저장이 가능합니다.
           </RightDescription>
           <Image src="src/photos/introduce/introduce6.png" />
         </StepContainer>
         <StepContainer>
           <RightDescription>
-            6. '점자 생성' 버튼을 클릭하면 점자로 읽을 수 있습니다.
+            6. '재생성' 버튼을 클릭하면 동화를 다시 생성할 수 있습니다.
           </RightDescription>
           <Image src="src/photos/introduce/introduce5.png" />
         </StepContainer>
