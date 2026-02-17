@@ -133,7 +133,7 @@ const Team = () => {
       role: "AI, 백엔드",
       description: "임희진",
       image: user,
-      githubLink: "https://github.com/limhuijin",
+      githubLink: "https://github.com/hanataba227",
     },
     {
       role: "DB, 서버 개발",
