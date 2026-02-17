@@ -1,4 +1,4 @@
-import { authenticatedFetch } from '../utils/api';
+import { authenticatedFetch } from './api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
