@@ -96,6 +96,14 @@ const StoryContent = styled.p`
   white-space: pre-wrap;
 `;
 
+const StoryDate = styled.p`
+  font-size: 1em;
+  color: #888;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+`;
+
 // 모달 스타일
 const ModalOverlay = styled.div`
   position: fixed;
@@ -129,16 +137,27 @@ const ModalContent = styled.div`
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  font-size: 2em;
+  top: 10px;
+  right: 10px;
+  background: #f5f5f5;
+  border: 2px solid #ddd;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.8em;
   cursor: pointer;
   color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.3s;
   
   &:hover {
+    background: #e0e0e0;
     color: #000;
+    border-color: #999;
+    transform: scale(1.1);
   }
 `;
 
@@ -149,6 +168,36 @@ const ModalImage = styled.img`
   border-radius: 5px;
   margin-bottom: 20px;
   border: 1px solid #ddd;
+`;
+
+const DeleteButton = styled.button`
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #c9302c;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+const ModalFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
 `;
 
 const LoadingMessage = styled.div`
@@ -202,6 +251,7 @@ const MyPage = ({ user }: MyPageProps) => {
   const [error, setError] = useState<string | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -240,6 +290,46 @@ const MyPage = ({ user }: MyPageProps) => {
 
   const handleCloseModal = () => {
     setSelectedStory(null);
+  };
+
+  const handleDeleteStory = async () => {
+    if (!selectedStory) return;
+
+    const confirmed = window.confirm(
+      `"${selectedStory.story_name}"\uc744(\ub97c) \uc815\ub9d0 \uc0ad\uc81c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?\n\uc0ad\uc81c\ud55c \ub3d9\ud654\ub294 \ubcf5\uad6c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.`
+    );
+
+    if (!confirmed) return;
+
+    setDeleting(true);
+    try {
+      await storyApi.deleteStory(selectedStory.story_id);
+      
+      // \ubaa9\ub85d\uc5d0\uc11c \uc0ad\uc81c\ub41c \ud56d\ubaa9 \uc81c\uac70
+      setStories(stories.filter(story => story.story_id !== selectedStory.story_id));
+      
+      // \ubaa8\ub2ec \ub2eb\uae30
+      setSelectedStory(null);
+      
+      alert("\ub3d9\ud654\uac00 \uc131\uacf5\uc801\uc73c\ub85c \uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.");
+    } catch (err) {
+      console.error("\ub3d9\ud654 \uc0ad\uc81c \uc2e4\ud328:", err);
+      alert(err instanceof Error ? err.message : "\ub3d9\ud654 \uc0ad\uc81c\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   if (loading) {
@@ -281,6 +371,7 @@ const MyPage = ({ user }: MyPageProps) => {
                 }}
               />
               <StoryTitle>{story.story_name}</StoryTitle>
+              <StoryDate>{formatDate(story.created_at)}</StoryDate>
             </StoryCard>
           ))}
         </StoriesGrid>
@@ -301,6 +392,12 @@ const MyPage = ({ user }: MyPageProps) => {
             />
             <StoryTitle>{selectedStory.story_name}</StoryTitle>
             <StoryContent>{selectedStory.story_content}</StoryContent>
+            <ModalFooter>
+              <StoryDate>{formatDate(selectedStory.created_at)}</StoryDate>
+              <DeleteButton onClick={handleDeleteStory} disabled={deleting}>
+                {deleting ? "삭제 중..." : "동화 삭제"}
+              </DeleteButton>
+            </ModalFooter>
           </ModalContent>
         </ModalOverlay>
       )}

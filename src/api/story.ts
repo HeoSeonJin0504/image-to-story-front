@@ -7,6 +7,7 @@ export interface StoryListItem {
   story_id: number;
   story_name: string;
   image_url: string;
+  created_at: string;
 }
 
 // 이야기 상세 조회 응답 (전체 정보)
@@ -15,6 +16,7 @@ export interface StoryDetail {
   story_name: string;
   story_content: string;
   image_url: string;
+  created_at: string;
 }
 
 export interface ImageUploadResponse {
@@ -28,6 +30,7 @@ export interface StorySaveResponse {
   story_name: string;
   story_content: string;
   image_url: string;
+  created_at: string;
 }
 
 export const storyApi = {
@@ -101,5 +104,19 @@ export const storyApi = {
     }
 
     return response.json();
+  },
+
+  // 동화 삭제
+  deleteStory: async (storyId: number): Promise<void> => {
+    const response = await authenticatedFetch(`${API_BASE_URL}/story/${storyId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('이미 삭제되었거나 권한이 없습니다.');
+      }
+      throw new Error('동화 삭제에 실패했습니다.');
+    }
   },
 };

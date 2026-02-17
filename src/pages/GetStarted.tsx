@@ -255,8 +255,20 @@ const GetStarted = ({ user }: GetStartedProps) => {
         storyTitle,
         storyContent
       );
-      alert("동화 저장이 완료되었습니다.");
+      
+      // 저장된 날짜를 한국 시간으로 변환하여 표시
+      const savedDate = new Date(result.created_at);
+      const formattedDate = savedDate.toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      
+      alert(`동화 저장이 완료되었습니다.\n저장 일시: ${formattedDate}`);
       console.log("저장된 이미지 URL:", result.image_url);
+      console.log("저장 일시:", result.created_at);
     } catch (error) {
       console.error("Error during API call:", error);
       alert("동화 저장에 실패했습니다. 서버 error!");
