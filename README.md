@@ -95,6 +95,13 @@ npm run dev
 - `.env` 파일은 절대 Git에 커밋하지 마세요
 - Refresh Token은 HttpOnly Cookie로 관리되므로, 백엔드에서 CORS 및 Cookie 설정이 올바르게 되어 있어야 합니다
 
+## 저장소
+본 프로젝트는 2개의 저장소로 구성되어 있습니다:
+
+- **프론트엔드 (React)** - 현재 저장소
+
+- **백엔드 (Node.js)** - https://github.com/HeoSeonJin0504/image-to-story-node.git
+  
 ## 팀원 소개
 | 이름 | 역할 | GitHub |
 |------|------|--------|
