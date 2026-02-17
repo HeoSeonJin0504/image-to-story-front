@@ -187,23 +187,25 @@ const Header = ({ user, setUser }: HeaderProps) => {
           </NavLink>
         </li>
         {user && (
-          <li>
-            <NavLink
-              to="/get-started"
-              className={location.pathname === "/get-started" ? "active" : ""}
-            >
-              <h1>실습하기</h1>
-            </NavLink>
-          </li>
+          <>
+            <li>
+              <NavLink
+                to="/get-started"
+                className={location.pathname === "/get-started" ? "active" : ""}
+              >
+                <h1>실습하기</h1>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/mypage"
+                className={location.pathname === "/mypage" ? "active" : ""}
+              >
+                <h1>마이페이지</h1>
+              </NavLink>
+            </li>
+          </>
         )}
-        <li>
-          <NavLink
-            to="/team"
-            className={location.pathname === "/team" ? "active" : ""}
-          >
-            <h1>팀원</h1>
-          </NavLink>
-        </li>
         <li>
           {user ? (
             <div style={{ position: "relative" }}>

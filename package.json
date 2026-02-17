@@ -14,9 +14,9 @@
     "jotai": "^2.10.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^6.30.3",
     "styled-components": "^6.1.13",
-    "nanoid": "^3.3.8" 
+    "nanoid": "^3.3.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",

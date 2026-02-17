@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { color } from "../theme";
 
 const Style = styled.footer`
@@ -18,13 +19,25 @@ const Style = styled.footer`
 
   p {
     margin: 3px;
+  }
+
+  a {
+    color: ${color.lightGray};
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
     }
+  }
 `;
 
 const Footer = () => {
   return (
     <Style>
       <p>@ 2024 물로이조. All rights reserved</p>
+      <p>
+        <Link to="/team">팀원 소개</Link>
+      </p>
     </Style>
   );
 };

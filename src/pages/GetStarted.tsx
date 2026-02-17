@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import backgroundImage from "../photos/getstartedbackground.png";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { storyApi } from "../api/story";
 
 const Container = styled.div`
   display: flex;
@@ -212,21 +211,8 @@ const GetStarted = ({ user }: GetStartedProps) => {
 
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", selectedImage as Blob);
-    formData.append("user_id", user.user_id.toString());
-
     try {
-      const response = await fetch(`${API_BASE_URL}/image-upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("이미지 업로드 실패");
-      }
-
-      const result = await response.json();
+      const result = await storyApi.uploadImage(selectedImage, user.user_id);
       setStoryTitle(result.story_name);
       setStoryContent(result.story_content);
     } catch (error) {
@@ -237,30 +223,9 @@ const GetStarted = ({ user }: GetStartedProps) => {
     }
   };
 
-  const handleBrailleClick = async () => {
-    if (!storyContent) {
-      alert("먼저 동화를 생성해 주세요.");
-      return;
-    }
-
-    try {
-      await fetch(`${API_BASE_URL}/braille-generate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ story_content: storyContent }),
-      });
-      alert("점자 생성이 완료되었습니다.");
-    } catch (error) {
-      console.error("Error during API call:", error);
-      alert("점자 생성에 실패했습니다. 서버 error!");
-    }
-  };
-
-  const handleSaveImageClick = async () => {
-    if (!selectedImage || !storyTitle || !storyContent) {
-      alert("그림을 업로드해서 그림을 생성해 주세요.");
+  const handleRegenerateClick = async () => {
+    if (!selectedImage) {
+      alert("이미지를 먼저 업로드 해주세요.");
       return;
     }
 
@@ -269,23 +234,29 @@ const GetStarted = ({ user }: GetStartedProps) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", selectedImage as Blob);
-    formData.append("story_title", storyTitle);
-    formData.append("story_content", storyContent);
-    formData.append("user_id", user.user_id.toString());
+    await handleAnalyzeClick();
+  };
+
+  const handleSaveImageClick = async () => {
+    if (!selectedImage || !storyTitle || !storyContent) {
+      alert("그림을 업로드해서 동화를 생성해 주세요.");
+      return;
+    }
+
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/save-story`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("동화 저장이 완료되었습니다.");
-      } else {
-        alert("동화 저장에 실패했습니다.");
-      }
+      const result = await storyApi.saveStory(
+        selectedImage,
+        user.user_id,
+        storyTitle,
+        storyContent
+      );
+      alert("동화 저장이 완료되었습니다.");
+      console.log("저장된 이미지 URL:", result.image_url);
     } catch (error) {
       console.error("Error during API call:", error);
       alert("동화 저장에 실패했습니다. 서버 error!");
@@ -311,7 +282,7 @@ const GetStarted = ({ user }: GetStartedProps) => {
             onChange={handleFileChange}
           />
           <Button onClick={handleAnalyzeClick} disabled={loading}>
-            {loading ? "동화를 생성하는 중입니다!" : "그림 저장 및 동화 생성"}
+            {loading ? "동화를 생성하는 중입니다!" : "동화 생성"}
           </Button>
         </ButtonContainer>
       </LeftContainer>
@@ -330,7 +301,9 @@ const GetStarted = ({ user }: GetStartedProps) => {
         </RightForm>
         {storyTitle && storyContent && (
           <ButtonContainer>
-            <Button onClick={handleBrailleClick}>점자 생성</Button>
+            <Button onClick={handleRegenerateClick} disabled={loading}>
+              재생성
+            </Button>
             <Button onClick={handleSaveImageClick}>동화 저장</Button>
           </ButtonContainer>
         )}
