@@ -1,3 +1,5 @@
+import { authenticatedFetch } from '../utils/api';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // 이야기 목록 조회 응답 (간단한 정보만)
@@ -35,7 +37,7 @@ export const storyApi = {
     formData.append('file', file);
     formData.append('user_id', userId.toString());
 
-    const response = await fetch(`${API_BASE_URL}/image-upload`, {
+    const response = await authenticatedFetch(`${API_BASE_URL}/image-upload`, {
       method: 'POST',
       body: formData,
     });
@@ -60,7 +62,7 @@ export const storyApi = {
     formData.append('story_name', storyName);
     formData.append('story_content', storyContent);
 
-    const response = await fetch(`${API_BASE_URL}/story-save`, {
+    const response = await authenticatedFetch(`${API_BASE_URL}/story-save`, {
       method: 'POST',
       body: formData,
     });
@@ -74,7 +76,7 @@ export const storyApi = {
 
   // 사용자의 동화 목록 조회 (간단한 정보만)
   getMyStories: async (userId: number): Promise<StoryListItem[]> => {
-    const response = await fetch(`${API_BASE_URL}/stories/${userId}`, {
+    const response = await authenticatedFetch(`${API_BASE_URL}/stories/${userId}`, {
       method: 'GET',
     });
 
@@ -87,7 +89,7 @@ export const storyApi = {
 
   // 동화 상세 조회 (전체 정보)
   getStoryDetail: async (storyId: number): Promise<StoryDetail> => {
-    const response = await fetch(`${API_BASE_URL}/story/${storyId}`, {
+    const response = await authenticatedFetch(`${API_BASE_URL}/story/${storyId}`, {
       method: 'GET',
     });
 
