@@ -12,13 +12,13 @@
 ## 주요 화면
 
 ### 홈 화면
-(./src/photos/screenshots/Home.png)
+![홈 화면](./src/photos/screenshots/Home.png)
 
 ### 그림 업로드 및 동화 생성
-(./src/photos/screenshots/GetStarted.png)
+![실습하기 화면](./src/photos/screenshots/GetStarted.png)
 
 ### 마이페이지
-(./src/photos/screenshots/MyPage.png)
+![마이페이지 화면](./src/photos/screenshots/MyPage.png)
 
 ## 🛠️ 기술 스택
 - **Framework**: React 18
