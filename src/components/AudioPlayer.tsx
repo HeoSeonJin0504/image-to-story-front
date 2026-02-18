@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-/* ────────────────────────── 스타일 ────────────────────────── */
-
 const Wrapper = styled.div`
   width: 100%;
   margin-top: 20px;
