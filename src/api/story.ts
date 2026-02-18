@@ -48,6 +48,10 @@ export const storyApi = {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '동화 생성 요청이 너무 많습니다. 1시간에 3회까지 가능합니다.');
+      }
       throw new Error('이미지 업로드 및 동화 생성에 실패했습니다.');
     }
 
@@ -75,6 +79,10 @@ export const storyApi = {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '동화 저장 요청이 너무 많습니다. 1시간에 5회까지 가능합니다.');
+      }
       throw new Error('동화 저장에 실패했습니다.');
     }
 
@@ -122,6 +130,10 @@ export const storyApi = {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'TTS 미리듣기 요청이 너무 많습니다. 1시간에 3회까지 가능합니다.');
+      }
       throw new Error('TTS 미리듣기에 실패했습니다.');
     }
 

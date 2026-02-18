@@ -14,6 +14,10 @@ export const authApi = {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '로그인 시도가 너무 많습니다. 15분 후 다시 시도해주세요.');
+      }
       throw new Error('로그인에 실패했습니다.');
     }
 
@@ -52,6 +56,10 @@ export const authApi = {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '회원가입 시도가 너무 많습니다. 1시간 후 다시 시도해주세요.');
+      }
       const errorData = await response.json();
       throw new Error(errorData.detail || '회원가입에 실패했습니다.');
     }

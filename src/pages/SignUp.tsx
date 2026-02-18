@@ -210,7 +210,8 @@ const SignUp = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('중복 확인에 실패했습니다. 서버 Error!');
+      const message = error instanceof Error ? error.message : '중복 확인에 실패했습니다.';
+      alert(message);
     }
   };
 
@@ -268,8 +269,9 @@ const SignUp = () => {
       navigate("/login");
     } catch (error) {
       console.error('Error:', error);
-      setError(error instanceof Error ? error.message : "회원가입에 실패했습니다.");
-      alert("회원가입에 실패했습니다.");
+      const message = error instanceof Error ? error.message : "회원가입에 실패했습니다.";
+      setError(message);
+      alert(message);
     } finally {
       setLoading(false);
     }

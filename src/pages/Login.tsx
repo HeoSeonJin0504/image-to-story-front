@@ -125,7 +125,8 @@ const Login = ({ setUser }: LoginProps) => {
       navigate("/");
     } catch (error) {
       console.error('Error:', error);
-      alert("아이디 또는 비밀번호가 잘못되었습니다.");
+      const message = error instanceof Error ? error.message : '아이디 또는 비밀번호가 잘못되었습니다.';
+      alert(message);
     } finally {
       setLoading(false);
     }

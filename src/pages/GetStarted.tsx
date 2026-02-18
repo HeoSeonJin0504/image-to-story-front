@@ -280,7 +280,8 @@ const GetStarted = ({ user }: GetStartedProps) => {
       setStoryTitle(result.story_name);
       setStoryContent(result.story_content);
     } catch (error) {
-      alert("이미지 분석에 실패했습니다. 서버 error!");
+      const message = error instanceof Error ? error.message : '이미지 분석에 실패했습니다.';
+      alert(message);
     } finally {
       setLoading(false);
     }
@@ -316,8 +317,9 @@ const GetStarted = ({ user }: GetStartedProps) => {
       };
       await audio.play();
       setPreviewPlaying(true);
-    } catch {
-      alert('TTS 미리듣기에 실패했습니다.');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'TTS 미리듣기에 실패했습니다.';
+      alert(message);
       setPreviewPlaying(false);
     } finally {
       setPreviewLoading(false);
@@ -375,7 +377,8 @@ const GetStarted = ({ user }: GetStartedProps) => {
       
       alert(`동화 저장이 완료되었습니다.\n저장 일시: ${formattedDate}`);
     } catch (error) {
-      alert("동화 저장에 실패했습니다. 서버 error!");
+      const message = error instanceof Error ? error.message : '동화 저장에 실패했습니다.';
+      alert(message);
     }
   };
 
