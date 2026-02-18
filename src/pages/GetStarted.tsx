@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import backgroundImage from "../photos/getstartedbackground.png";
 import { storyApi } from "../api/story";
+import { AudioPlayer } from "../components";
 
 const Container = styled.div`
   display: flex;
@@ -175,6 +176,43 @@ const Footer = styled.footer`
   }
 `;
 
+const VoiceSelectWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  width: 100%;
+`;
+
+const VoiceLabel = styled.p`
+  font-size: 1.1em;
+  color: #555;
+  margin: 0;
+`;
+
+const VoiceButtons = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const VoiceButton = styled.button<{ $active: boolean }>`
+  padding: 10px 24px;
+  border: 2px solid #abb7b7;
+  border-radius: 7px;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  background: ${({ $active }) => ($active ? '#abb7b7' : 'white')};
+  color: ${({ $active }) => ($active ? 'white' : '#555')};
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: #abb7b7;
+    color: white;
+  }
+`;
+
 interface GetStartedProps {
   user: { name: string; id: string; user_id: number } | null;
 }
@@ -185,11 +223,14 @@ const GetStarted = ({ user }: GetStartedProps) => {
   const [storyTitle, setStoryTitle] = useState<string | null>(null);
   const [storyContent, setStoryContent] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [savedAudioUrl, setSavedAudioUrl] = useState<string | null>(null);
+  const [voiceGender, setVoiceGender] = useState<'MALE' | 'FEMALE'>('FEMALE');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       setSelectedImage(file);
+      setSavedAudioUrl(null);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -216,7 +257,6 @@ const GetStarted = ({ user }: GetStartedProps) => {
       setStoryTitle(result.story_name);
       setStoryContent(result.story_content);
     } catch (error) {
-      console.error("Error:", error);
       alert("이미지 분석에 실패했습니다. 서버 error!");
     } finally {
       setLoading(false);
@@ -253,10 +293,12 @@ const GetStarted = ({ user }: GetStartedProps) => {
         selectedImage,
         user.user_id,
         storyTitle,
-        storyContent
+        storyContent,
+        voiceGender
       );
       
-      // 저장된 날짜를 한국 시간으로 변환하여 표시
+      setSavedAudioUrl(result.audio_url ?? null);
+      
       const savedDate = new Date(result.created_at);
       const formattedDate = savedDate.toLocaleString("ko-KR", {
         year: "numeric",
@@ -267,10 +309,7 @@ const GetStarted = ({ user }: GetStartedProps) => {
       });
       
       alert(`동화 저장이 완료되었습니다.\n저장 일시: ${formattedDate}`);
-      console.log("저장된 이미지 URL:", result.image_url);
-      console.log("저장 일시:", result.created_at);
     } catch (error) {
-      console.error("Error during API call:", error);
       alert("동화 저장에 실패했습니다. 서버 error!");
     }
   };
@@ -312,12 +351,34 @@ const GetStarted = ({ user }: GetStartedProps) => {
           )}
         </RightForm>
         {storyTitle && storyContent && (
-          <ButtonContainer>
-            <Button onClick={handleRegenerateClick} disabled={loading}>
-              재생성
-            </Button>
-            <Button onClick={handleSaveImageClick}>동화 저장</Button>
-          </ButtonContainer>
+          <>
+            <VoiceSelectWrapper>
+              <VoiceLabel>목소리 선택</VoiceLabel>
+              <VoiceButtons>
+                <VoiceButton
+                  $active={voiceGender === 'FEMALE'}
+                  onClick={() => setVoiceGender('FEMALE')}
+                >
+                  여성
+                </VoiceButton>
+                <VoiceButton
+                  $active={voiceGender === 'MALE'}
+                  onClick={() => setVoiceGender('MALE')}
+                >
+                  남성
+                </VoiceButton>
+              </VoiceButtons>
+            </VoiceSelectWrapper>
+            <ButtonContainer>
+              <Button onClick={handleRegenerateClick} disabled={loading}>
+                재생성
+              </Button>
+              <Button onClick={handleSaveImageClick}>동화 저장</Button>
+            </ButtonContainer>
+          </>
+        )}
+        {savedAudioUrl && (
+          <AudioPlayer src={savedAudioUrl} />
         )}
       </RightContainer>
       <Footer>

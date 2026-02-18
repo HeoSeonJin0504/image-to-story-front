@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { storyApi, StoryListItem, StoryDetail } from "../api/story";
 import backgroundImage from "../photos/getstartedbackground.png";
+import { AudioPlayer } from "../components";
 
 const Container = styled.div`
   display: flex;
@@ -264,8 +265,7 @@ const MyPage = ({ user }: MyPageProps) => {
       try {
         const data = await storyApi.getMyStories(user.user_id);
         setStories(data);
-      } catch (err) {
-        console.error("Error fetching stories:", err);
+      } catch {
         setError("동화 목록을 불러오는데 실패했습니다.");
       } finally {
         setLoading(false);
@@ -280,8 +280,7 @@ const MyPage = ({ user }: MyPageProps) => {
     try {
       const detail = await storyApi.getStoryDetail(storyId);
       setSelectedStory(detail);
-    } catch (err) {
-      console.error("상세 정보 조회 실패:", err);
+    } catch {
       alert("동화 상세 정보를 불러오는데 실패했습니다.");
     } finally {
       setDetailLoading(false);
@@ -296,7 +295,7 @@ const MyPage = ({ user }: MyPageProps) => {
     if (!selectedStory) return;
 
     const confirmed = window.confirm(
-      `"${selectedStory.story_name}"\uc744(\ub97c) \uc815\ub9d0 \uc0ad\uc81c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?\n\uc0ad\uc81c\ud55c \ub3d9\ud654\ub294 \ubcf5\uad6c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.`
+      `"${selectedStory.story_name}"을(를) 정말 삭제하시겠습니까?\n삭제한 동화는 복구할 수 없습니다.`
     );
 
     if (!confirmed) return;
@@ -305,16 +304,13 @@ const MyPage = ({ user }: MyPageProps) => {
     try {
       await storyApi.deleteStory(selectedStory.story_id);
       
-      // \ubaa9\ub85d\uc5d0\uc11c \uc0ad\uc81c\ub41c \ud56d\ubaa9 \uc81c\uac70
       setStories(stories.filter(story => story.story_id !== selectedStory.story_id));
       
-      // \ubaa8\ub2ec \ub2eb\uae30
       setSelectedStory(null);
       
-      alert("\ub3d9\ud654\uac00 \uc131\uacf5\uc801\uc73c\ub85c \uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.");
+      alert("동화가 성공적으로 삭제되었습니다.");
     } catch (err) {
-      console.error("\ub3d9\ud654 \uc0ad\uc81c \uc2e4\ud328:", err);
-      alert(err instanceof Error ? err.message : "\ub3d9\ud654 \uc0ad\uc81c\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.");
+      alert(err instanceof Error ? err.message : "동화 삭제에 실패했습니다.");
     } finally {
       setDeleting(false);
     }
@@ -392,6 +388,9 @@ const MyPage = ({ user }: MyPageProps) => {
             />
             <StoryTitle>{selectedStory.story_name}</StoryTitle>
             <StoryContent>{selectedStory.story_content}</StoryContent>
+            {selectedStory.audio_url && (
+              <AudioPlayer src={selectedStory.audio_url} />
+            )}
             <ModalFooter>
               <StoryDate>{formatDate(selectedStory.created_at)}</StoryDate>
               <DeleteButton onClick={handleDeleteStory} disabled={deleting}>

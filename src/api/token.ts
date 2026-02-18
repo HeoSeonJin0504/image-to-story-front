@@ -9,7 +9,6 @@ export const tokenManager = {
   setAccessToken: (token: string) => {
     accessToken = token;
     localStorage.setItem(ACCESS_TOKEN_KEY, token);
-    console.log('Access Token 저장됨');
   },
 
   // Access Token 가져오기
@@ -21,7 +20,6 @@ export const tokenManager = {
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
     if (token) {
       accessToken = token;
-      console.log('localStorage에서 Access Token 복원');
     }
     return token;
   },
@@ -30,7 +28,6 @@ export const tokenManager = {
   clearAccessToken: () => {
     accessToken = null;
     localStorage.removeItem(ACCESS_TOKEN_KEY);
-    console.log('Access Token 삭제됨');
   },
 
   // 토큰이 있는지 확인

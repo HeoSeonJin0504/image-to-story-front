@@ -16,6 +16,7 @@ export interface StoryDetail {
   story_name: string;
   story_content: string;
   image_url: string;
+  audio_url: string | null;
   created_at: string;
 }
 
@@ -30,6 +31,7 @@ export interface StorySaveResponse {
   story_name: string;
   story_content: string;
   image_url: string;
+  audio_url: string | null;
   created_at: string;
 }
 
@@ -57,13 +59,15 @@ export const storyApi = {
     file: File,
     userId: number,
     storyName: string,
-    storyContent: string
+    storyContent: string,
+    voiceGender: 'MALE' | 'FEMALE' = 'FEMALE'
   ): Promise<StorySaveResponse> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('user_id', userId.toString());
     formData.append('story_name', storyName);
     formData.append('story_content', storyContent);
+    formData.append('voice_gender', voiceGender);
 
     const response = await authenticatedFetch(`${API_BASE_URL}/story-save`, {
       method: 'POST',

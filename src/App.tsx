@@ -30,25 +30,18 @@ function App() {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        console.log('앱 시작 시 토큰 갱신 시도...');
-        // Refresh Token으로 Access Token 재발급 시도
         const data = await authApi.refresh();
-        console.log('Refresh 응답 데이터:', data);
         
-        // 백엔드에서 user_id, name, username을 반환하는지 확인
         if (data.user_id && data.name) {
           const userData = {
             name: data.name,
             id: data.username || data.id || '',
             user_id: data.user_id,
           };
-          console.log('사용자 정보 복원:', userData);
           setUser(userData);
-        } else {
-          console.warn('Refresh 응답에 사용자 정보가 없습니다:', data);
         }
-      } catch (error) {
-        console.log('자동 로그인 실패 (정상 동작 - 처음 방문 또는 토큰 만료):', error);
+      } catch {
+        // 처음 방문 또는 토큰 만료 시 정상 동작
       } finally {
         setIsInitializing(false);
       }

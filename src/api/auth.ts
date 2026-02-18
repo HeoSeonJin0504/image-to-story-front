@@ -18,14 +18,9 @@ export const authApi = {
     }
 
     const data = await response.json();
-    console.log('로그인 응답:', data);
     
-    // Access Token 저장
     if (data.accessToken) {
       tokenManager.setAccessToken(data.accessToken);
-      console.log('Access Token 저장 완료');
-    } else {
-      console.warn('accessToken이 응답에 없습니다.');
     }
     
     return data;
@@ -66,19 +61,11 @@ export const authApi = {
 
   logout: async () => {
     try {
-      const response = await publicFetch(`${API_BASE_URL}/logout`, {
+      await publicFetch(`${API_BASE_URL}/logout`, {
         method: 'POST',
       });
-
-      // 로그아웃은 서버 응답과 상관없이 클라이언트 토큰 삭제
       tokenManager.clearAccessToken();
-
-      if (!response.ok) {
-        console.warn('로그아웃 API 호출 실패, 로컬 토큰은 삭제됨');
-      }
-    } catch (error) {
-      console.error('로그아웃 오류:', error);
-      // 에러가 발생해도 로컬 토큰은 삭제
+    } catch {
       tokenManager.clearAccessToken();
     }
   },
@@ -89,18 +76,13 @@ export const authApi = {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Refresh 실패:', response.status, errorText);
       throw new Error('토큰 갱신에 실패했습니다.');
     }
 
     const data = await response.json();
-    console.log('Refresh 성공:', data);
     
     if (data.accessToken) {
       tokenManager.setAccessToken(data.accessToken);
-    } else {
-      console.warn('accessToken이 응답에 없습니다.');
     }
     
     return data;

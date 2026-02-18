@@ -167,9 +167,7 @@ const Header = ({ user, setUser }: HeaderProps) => {
       setUser(null);
       setDropdownOpen(false);
       navigate("/");
-    } catch (error) {
-      console.error("로그아웃 오류:", error);
-      // 에러가 발생해도 로컬 상태는 초기화
+    } catch {
       setUser(null);
       setDropdownOpen(false);
       navigate("/");
