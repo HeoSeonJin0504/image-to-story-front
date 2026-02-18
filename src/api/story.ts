@@ -110,6 +110,24 @@ export const storyApi = {
     return response.json();
   },
 
+  // TTS 미리듣기 (Blob 반환)
+  ttsPreview: async (
+    storyContent: string,
+    voiceGender: 'MALE' | 'FEMALE' = 'FEMALE'
+  ): Promise<Blob> => {
+    const response = await authenticatedFetch(`${API_BASE_URL}/tts-preview`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ story_content: storyContent, voice_gender: voiceGender }),
+    });
+
+    if (!response.ok) {
+      throw new Error('TTS 미리듣기에 실패했습니다.');
+    }
+
+    return response.blob();
+  },
+
   // 동화 삭제
   deleteStory: async (storyId: number): Promise<void> => {
     const response = await authenticatedFetch(`${API_BASE_URL}/story/${storyId}`, {

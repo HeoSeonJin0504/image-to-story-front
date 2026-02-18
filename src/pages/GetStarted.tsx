@@ -212,6 +212,28 @@ const VoiceButton = styled.button<{ $active: boolean }>`
   }
 `;
 
+const PreviewButton = styled.button`
+  padding: 8px 20px;
+  border: 2px solid #abb7b7;
+  border-radius: 7px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  background: white;
+  color: #555;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #abb7b7;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 interface GetStartedProps {
   user: { name: string; id: string; user_id: number } | null;
 }
@@ -223,6 +245,10 @@ const GetStarted = ({ user }: GetStartedProps) => {
   const [storyContent, setStoryContent] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [voiceGender, setVoiceGender] = useState<'MALE' | 'FEMALE'>('FEMALE');
+  const [previewLoading, setPreviewLoading] = useState<boolean>(false);
+  const [previewPlaying, setPreviewPlaying] = useState<boolean>(false);
+  const previewAudioRef = React.useRef<HTMLAudioElement | null>(null);
+  const previewBlobUrlRef = React.useRef<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -258,6 +284,50 @@ const GetStarted = ({ user }: GetStartedProps) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const stopPreview = () => {
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+    }
+    if (previewBlobUrlRef.current) {
+      URL.revokeObjectURL(previewBlobUrlRef.current);
+      previewBlobUrlRef.current = null;
+    }
+    setPreviewPlaying(false);
+  };
+
+  const handlePreviewClick = async () => {
+    if (!storyContent) return;
+    stopPreview();
+    setPreviewLoading(true);
+    try {
+      const blob = await storyApi.ttsPreview(storyContent, voiceGender);
+      const url = URL.createObjectURL(blob);
+      previewBlobUrlRef.current = url;
+      const audio = new Audio(url);
+      previewAudioRef.current = audio;
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        previewBlobUrlRef.current = null;
+        previewAudioRef.current = null;
+        setPreviewPlaying(false);
+      };
+      await audio.play();
+      setPreviewPlaying(true);
+    } catch {
+      alert('TTS 미리듣기에 실패했습니다.');
+      setPreviewPlaying(false);
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleVoiceGenderChange = (gender: 'MALE' | 'FEMALE') => {
+    if (gender === voiceGender) return;
+    stopPreview();
+    setVoiceGender(gender);
   };
 
   const handleRegenerateClick = async () => {
@@ -352,17 +422,28 @@ const GetStarted = ({ user }: GetStartedProps) => {
               <VoiceButtons>
                 <VoiceButton
                   $active={voiceGender === 'FEMALE'}
-                  onClick={() => setVoiceGender('FEMALE')}
+                  onClick={() => handleVoiceGenderChange('FEMALE')}
                 >
                   여성
                 </VoiceButton>
                 <VoiceButton
                   $active={voiceGender === 'MALE'}
-                  onClick={() => setVoiceGender('MALE')}
+                  onClick={() => handleVoiceGenderChange('MALE')}
                 >
                   남성
                 </VoiceButton>
               </VoiceButtons>
+              <PreviewButton
+                onClick={handlePreviewClick}
+                disabled={previewLoading || previewPlaying}
+              >
+                {previewLoading ? '불러오는 중…' : '🔊 미리듣기'}
+              </PreviewButton>
+              {previewPlaying && (
+                <PreviewButton onClick={stopPreview}>
+                  ⏹ 정지
+                </PreviewButton>
+              )}
             </VoiceSelectWrapper>
             <ButtonContainer>
               <Button onClick={handleRegenerateClick} disabled={loading}>
