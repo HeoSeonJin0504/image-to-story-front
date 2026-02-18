@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import backgroundImage from "../photos/getstartedbackground.png";
 import { storyApi } from "../api/story";
-import { AudioPlayer } from "../components";
 
 const Container = styled.div`
   display: flex;
@@ -223,14 +222,12 @@ const GetStarted = ({ user }: GetStartedProps) => {
   const [storyTitle, setStoryTitle] = useState<string | null>(null);
   const [storyContent, setStoryContent] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [savedAudioUrl, setSavedAudioUrl] = useState<string | null>(null);
   const [voiceGender, setVoiceGender] = useState<'MALE' | 'FEMALE'>('FEMALE');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       setSelectedImage(file);
-      setSavedAudioUrl(null);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -296,8 +293,6 @@ const GetStarted = ({ user }: GetStartedProps) => {
         storyContent,
         voiceGender
       );
-      
-      setSavedAudioUrl(result.audio_url ?? null);
       
       const savedDate = new Date(result.created_at);
       const formattedDate = savedDate.toLocaleString("ko-KR", {
@@ -376,9 +371,6 @@ const GetStarted = ({ user }: GetStartedProps) => {
               <Button onClick={handleSaveImageClick}>동화 저장</Button>
             </ButtonContainer>
           </>
-        )}
-        {savedAudioUrl && (
-          <AudioPlayer src={savedAudioUrl} />
         )}
       </RightContainer>
       <Footer>
