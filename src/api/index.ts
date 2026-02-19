@@ -2,7 +2,7 @@
 export { tokenManager } from './token';
 
 // HTTP 유틸리티
-export { authenticatedFetch, publicFetch, initializeAuth } from './api';
+export { authenticatedFetch, publicFetch } from './api';
 
 // 인증 API
 export { authApi } from './auth';

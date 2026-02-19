@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import backgroundImage from "../photos/getstartedbackground.png";
 import { storyApi } from "../api/story";
+import { User } from "../types/user";
 
 const Container = styled.div`
   display: flex;
@@ -235,7 +236,7 @@ const PreviewButton = styled.button`
 `;
 
 interface GetStartedProps {
-  user: { name: string; id: string; user_id: number } | null;
+  user: User | null;
 }
 
 const GetStarted = ({ user }: GetStartedProps) => {

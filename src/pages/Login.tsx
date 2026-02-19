@@ -2,8 +2,6 @@ import styled from "styled-components";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { color } from "../theme";
-import { userNameAtom, userPasswordAtom } from "../state";
-import { useAtom } from "jotai";
 import backgroundImage from "../photos/loginbackground.png";
 import { authApi } from "../api/auth";
 import { User } from "../types/user";
@@ -106,8 +104,8 @@ interface LoginProps {
 }
 
 const Login = ({ setUser }: LoginProps) => {
-  const [username, setUsername] = useAtom(userNameAtom);
-  const [password, setPassword] = useAtom(userPasswordAtom);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -119,8 +117,7 @@ const Login = ({ setUser }: LoginProps) => {
       const data = await authApi.login(username, password);
       setUser({
         name: data.name,
-        id: data.username || username,
-        user_id: data.user_id
+        user_id: data.user_id,
       });
       navigate("/");
     } catch (error) {
@@ -129,6 +126,7 @@ const Login = ({ setUser }: LoginProps) => {
       alert(message);
     } finally {
       setLoading(false);
+      setPassword(''); // 로그인 후 비밀번호 즉시 초기화
     }
   };
 

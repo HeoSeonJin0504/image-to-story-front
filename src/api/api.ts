@@ -34,7 +34,6 @@ export const authenticatedFetch = async (
 ): Promise<Response> => {
   const token = tokenManager.getAccessToken();
   
-  // Authorization 헤더 추가
   const headers = new Headers(options.headers);
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
@@ -43,10 +42,9 @@ export const authenticatedFetch = async (
   const response = await fetch(url, {
     ...options,
     headers,
-    credentials: 'include', // 쿠키 자동 전송
+    credentials: 'include',
   });
 
-  // 401 에러이고 아직 재시도하지 않았다면 refresh 시도
   if (response.status === 401 && retryCount === 0) {
     const refreshSuccess = await refreshAccessToken();
     
@@ -54,7 +52,7 @@ export const authenticatedFetch = async (
       return authenticatedFetch(url, options, retryCount + 1);
     } else {
       tokenManager.clearAccessToken();
-      window.location.href = '/login';
+      window.dispatchEvent(new CustomEvent('auth:expired'));
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }
   }
@@ -71,9 +69,4 @@ export const publicFetch = async (
     ...options,
     credentials: 'include',
   });
-};
-
-// Access Token 재발급 (앱 시작 시 호출)
-export const initializeAuth = async (): Promise<boolean> => {
-  return await refreshAccessToken();
 };

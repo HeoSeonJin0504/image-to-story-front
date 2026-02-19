@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { storyApi, StoryListItem, StoryDetail } from "../api/story";
 import backgroundImage from "../photos/getstartedbackground.png";
 import { AudioPlayer } from "../components";
+import { User } from "../types/user";
 
 const Container = styled.div`
   display: flex;
@@ -243,7 +244,7 @@ const Footer = styled.footer`
 `;
 
 interface MyPageProps {
-  user: { name: string; id: string; user_id: number } | null;
+  user: User | null;
 }
 
 const MyPage = ({ user }: MyPageProps) => {

@@ -1,37 +1,21 @@
-// Access Token을 메모리와 localStorage에 저장하여 관리
-const ACCESS_TOKEN_KEY = 'accessToken';
+// Access Token을 메모리에만 저장 (localStorage 미사용, 호스팅 대비)
+// App.tsx의 /refresh를 호출해 자동 복구됨
 
-// 메모리에 저장된 토큰 (새로고침 시 사라짐)
 let accessToken: string | null = null;
 
 export const tokenManager = {
-  // Access Token 저장
+  // Access Token 저장 (메모리에만)
   setAccessToken: (token: string) => {
     accessToken = token;
-    localStorage.setItem(ACCESS_TOKEN_KEY, token);
   },
 
   // Access Token 가져오기
   getAccessToken: (): string | null => {
-    if (accessToken) {
-      return accessToken;
-    }
-    // 메모리에 없으면 localStorage에서 가져오기
-    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-    if (token) {
-      accessToken = token;
-    }
-    return token;
+    return accessToken;
   },
 
   // Access Token 삭제
   clearAccessToken: () => {
     accessToken = null;
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-  },
-
-  // 토큰이 있는지 확인
-  hasAccessToken: (): boolean => {
-    return !!tokenManager.getAccessToken();
   },
 };

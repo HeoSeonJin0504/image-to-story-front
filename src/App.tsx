@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Home, GetStarted, Introduce, Login, SignUp, Team, FindId, FindPw, MyPage } from "./pages";
 import { Header, Footer } from "./components";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { User } from "./types/user";
 import { authApi } from "./api/auth";
@@ -23,6 +23,24 @@ const LoadingContainer = styled.div`
   color: #555;
 `;
 
+// auth:expired 이벤트를 React Router로 처리하는 내부 컴포넌트
+// BrowserRouter 안에 있어야 useNavigate 사용 가능
+const AuthExpiredHandler = ({ setUser }: { setUser: (user: User | null) => void }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setUser(null);
+      navigate('/login');
+    };
+
+    window.addEventListener('auth:expired', handleAuthExpired);
+    return () => window.removeEventListener('auth:expired', handleAuthExpired);
+  }, [navigate, setUser]);
+
+  return null;
+};
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
@@ -33,12 +51,10 @@ function App() {
         const data = await authApi.refresh();
         
         if (data.user_id && data.name) {
-          const userData = {
+          setUser({
             name: data.name,
-            id: data.username || data.id || '',
             user_id: data.user_id,
-          };
-          setUser(userData);
+          });
         }
       } catch {
         // 처음 방문 또는 토큰 만료 시 정상 동작
@@ -50,32 +66,30 @@ function App() {
     initAuth();
   }, []);
 
-  // 초기화 중일 때는 로딩 표시
   if (isInitializing) {
     return <LoadingContainer>로딩 중...</LoadingContainer>;
   }
 
   return (
-    <>
-      <BrowserRouter>
-        <Style>
-          <Header user={user} setUser={setUser} />
-          <Routes>
-            <Route path="/" element={<Home user={user} />} />
-            <Route path="/introduce" element={<Introduce user={user} />} />
-            <Route path="/login" element={<Login setUser={setUser} />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/get-started" element={<GetStarted user={user} />} />
-            <Route path="/mypage" element={<MyPage user={user} />} />
-            <Route path="/find-id" element={<FindId />} />
-            <Route path="/find-pw" element={<FindPw />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-          <Footer />
-        </Style>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <AuthExpiredHandler setUser={setUser} />
+      <Style>
+        <Header user={user} setUser={setUser} />
+        <Routes>
+          <Route path="/" element={<Home user={user} />} />
+          <Route path="/introduce" element={<Introduce user={user} />} />
+          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/get-started" element={<GetStarted user={user} />} />
+          <Route path="/mypage" element={<MyPage user={user} />} />
+          <Route path="/find-id" element={<FindId />} />
+          <Route path="/find-pw" element={<FindPw />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+        <Footer />
+      </Style>
+    </BrowserRouter>
   );
 }
 
