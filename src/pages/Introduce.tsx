@@ -2,6 +2,13 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import backgroundImage from "../photos/introducebackground.png";
 import { User } from "../types/user";
+import introduceImg from "../photos/introduce.png";
+import introduce1 from "../photos/introduce/introduce1.png";
+import introduce2 from "../photos/introduce/introduce2.png";
+import introduce3 from "../photos/introduce/introduce3.png";
+import introduce4 from "../photos/introduce/introduce4.png";
+import introduce5 from "../photos/introduce/introduce5.png";
+import introduce6 from "../photos/introduce/introduce6.png";
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +38,6 @@ const LeftContainer = styled.div`
   padding: 40px;
 
   @media (max-width: 768px) {
-    // 모바일 세로 모드(반응형)
     margin-bottom: 20px;
   }
 `;
@@ -46,7 +52,6 @@ const RightContainer = styled.div`
   overflow-y: auto;
 
   @media (max-width: 768px) {
-    // 모바일 세로 모드(반응형)
     overflow-y: visible;
   }
 `;
@@ -138,6 +143,7 @@ const Button = styled(Link)`
     40% {
       transform: scale(1.15) rotate(0);
     }
+  }
 `;
 
 const StepContainer = styled.div`
@@ -192,7 +198,7 @@ const Introduce = ({ user }: IntroduceProps) => {
           <br />
           주제를 분석해 동화를 생성하는 프로그램입니다.
         </LeftDescription>
-        <Image src="src/photos/introduce.png" alt="프로그램 실행 사진" />
+        <Image src={introduceImg} alt="프로그램 실행 사진" />
         {user ? (
           <Button to="/get-started">실습하기</Button>
         ) : (
@@ -203,37 +209,37 @@ const Introduce = ({ user }: IntroduceProps) => {
         <RightTitle>프로그램 사용 방법</RightTitle>
         <StepContainer>
           <RightDescription>1. 로그인을 진행해 주세요.</RightDescription>
-          <Image src="src/photos/introduce/introduce1.png" />
+          <Image src={introduce1} />
         </StepContainer>
         <StepContainer>
           <RightDescription>
             2. 상단의 '실습하기'를 클릭해 주세요.
           </RightDescription>
-          <Image src="src/photos/introduce/introduce2.png" />
+          <Image src={introduce2} />
         </StepContainer>
         <StepContainer>
           <RightDescription>
-            3. '사진 열기' 버튼을 클락해서 그림을 업로드해 주세요.
+            3. '사진 열기' 버튼을 클릭해서 그림을 업로드해 주세요.
           </RightDescription>
-          <Image src="src/photos/introduce/introduce3.png" />
+          <Image src={introduce3} />
         </StepContainer>
         <StepContainer>
           <RightDescription>
             4. '동화 생성' 버튼을 클릭해 주세요.
           </RightDescription>
-          <Image src="src/photos/introduce/introduce4.png" />
+          <Image src={introduce4} />
         </StepContainer>
         <StepContainer>
           <RightDescription>
             5. '동화 저장' 버튼을 클릭하면 이미지 및 동화 저장이 가능합니다.
           </RightDescription>
-          <Image src="src/photos/introduce/introduce6.png" />
+          <Image src={introduce6} />
         </StepContainer>
         <StepContainer>
           <RightDescription>
             6. '재생성' 버튼을 클릭하면 동화를 다시 생성할 수 있습니다.
           </RightDescription>
-          <Image src="src/photos/introduce/introduce5.png" />
+          <Image src={introduce5} />
         </StepContainer>
       </RightContainer>
       <Footer>
