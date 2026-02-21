@@ -144,12 +144,18 @@ const StepImage = styled.img`
 `;
 
 const FreepikFooter = styled.footer`
-  padding: 10px 14px;
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
   font-size: 0.8em;
-  color: #888;
-  text-align: center;
+  color: #aaa;
+  z-index: 10;
 
-  a { color: #888; text-decoration: none; &:hover { text-decoration: underline; } }
+  a { color: #aaa; text-decoration: none; &:hover { text-decoration: underline; } }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 interface IntroduceProps { user: User | null; }

@@ -268,8 +268,8 @@ const PreviewBtn = styled.button`
 /* ────────── Footer ────────── */
 
 const FreepikFooter = styled.footer`
-  position: fixed;
-  bottom: 12px;
+  position: absolute;
+  bottom: 14px;
   left: 14px;
   font-size: 0.8em;
   color: #aaa;
@@ -287,6 +287,7 @@ const FreepikFooter = styled.footer`
     display: none;
   }
 `;
+
 /* ────────── Component ────────── */
 
 interface GetStartedProps {

@@ -210,15 +210,23 @@ const StateMessage = styled.div<{ $error?: boolean }>`
 `;
 
 const FreepikFooter = styled.footer`
-  margin-top: 32px;
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
   font-size: 0.8em;
-  color: #999;
+  color: #aaa;
+  z-index: 10;
+
   a {
-    color: #999;
+    color: #aaa;
     text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 
