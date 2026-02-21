@@ -84,6 +84,9 @@ export const authApi = {
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        return null;
+      }
       throw new Error('토큰 갱신에 실패했습니다.');
     }
 
