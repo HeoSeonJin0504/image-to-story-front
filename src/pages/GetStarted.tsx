@@ -4,236 +4,290 @@ import backgroundImage from "../photos/getstartedbackground.png";
 import { storyApi } from "../api/story";
 import { User } from "../types/user";
 
+/* ────────── Layout ────────── */
+
 const Container = styled.div`
   display: flex;
-  padding: 20px;
+  padding: 24px 24px 48px;
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
+  gap: 24px;
+  box-sizing: border-box;
 
-  &:before {
+  &::before {
     content: "";
     position: absolute;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 1;
+    inset: 0;
     z-index: -1;
-    top: 0;
-    left: 0;
     background-image: url(${backgroundImage});
     background-size: cover;
-    background-position: bottom;
+    background-position: bottom center;
     background-repeat: no-repeat;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.55);
     background-blend-mode: lighten;
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 10px;
+    padding: 16px 16px 32px;
+    gap: 0;
   }
 `;
 
-const LeftContainer = styled.div`
+const LeftPanel = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px;
+  padding-top: 60px;
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding-top: 0;
   }
 `;
 
-const RightContainer = styled.div`
+const RightPanel = styled.div`
   flex: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding-top: 60px;
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding-top: 0;
   }
 `;
 
-const LeftForm = styled.div`
+/* ────────── Cards ────────── */
+
+const Card = styled.div`
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #dce0e0;
+  border-radius: 14px;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+`;
+
+const LeftCard = styled(Card)`
+  max-width: 420px;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    min-height: 200px;
+    max-width: 100%;
+  }
+`;
+
+const RightCard = styled(Card)`
+  max-width: 560px;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  width: 40vw;
-  height: 40vh;
+  justify-content: center; /* 항상 상하 중앙 */
   text-align: center;
-  justify-content: center;
-  margin-top: 120px;
-  background-color: white;
-  border: 2px solid #abb7b7;
-  border-radius: 10px;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    height: 30vh;
-    margin-top: 20px;
-  }
-`;
-
-const RightForm = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  width: 40vw;
-  min-height: 40vh;
-  max-height: 100vh;
-  text-align: center;
-  justify-content: center;
-  margin-top: 120px;
-  background-color: white;
   overflow-y: auto;
-  border: 2px solid #abb7b7;
-  border-radius: 10px;
+  max-height: 65vh;
 
   @media (max-width: 768px) {
-    width: 100%;
-    min-height: 30vh;
-    margin-top: 20px;
+    max-height: none;
+    max-width: 100%;
+    min-height: 180px;
   }
 `;
+
+/* ────────── File Input ────────── */
 
 const FileInput = styled.input`
   display: none;
 `;
 
-const ButtonContainer = styled.div`
+const ImagePreview = styled.img`
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #bbb;
+  font-size: 0.95em;
+  border: 2px dashed #dce0e0;
+  border-radius: 10px;
+
+  @media (max-width: 768px) {
+    height: 140px;
+  }
+`;
+
+/* ────────── Buttons ────────── */
+
+const ButtonRow = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 420px;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 10px;
+    margin-top: 14px;
+    margin-bottom: 20px;
+    max-width: 100%;
   }
 `;
 
-const Button = styled.button`
-  padding: 15px;
-  text-decoration: none;
+const Btn = styled.button`
+  padding: 12px 24px;
   background: #abb7b7;
   border: 2px solid #abb7b7;
   font-weight: bold;
-  border-radius: 7px;
+  border-radius: 8px;
   color: white;
-  font-size: 1.5em;
+  font-size: 1.1em;
   cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.15s;
+  white-space: nowrap;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 
-  &:hover {
+  &:hover:not(:disabled) {
+    background: #fff;
+    color: #abb7b7;
+    transform: translateY(-1px);
   }
 
-  @media (max-width: 768px) {
-    margin-top: 10px;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
-const ImagePreview = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-  margin-bottom: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
-`;
+/* ────────── Story display ────────── */
 
 const StoryTitle = styled.h2`
-  font-size: 2em;
-  margin-bottom: 20px;
+  font-size: clamp(1.2em, 3vw, 1.8em);
+  margin-bottom: 16px;
   color: #343a40;
+  line-height: 1.3;
 `;
 
 const StoryContent = styled.p`
-  font-size: 1.5em;
-  line-height: 1.5;
-  color: #343a40;
+  font-size: clamp(0.95em, 2vw, 1.3em);
+  line-height: 1.7;
+  color: #444;
+  text-align: left;
+  white-space: pre-wrap;
+  margin: 0;
 `;
 
-const Footer = styled.footer`
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-size: 1em;
-  color: #333;
+/* ────────── Voice selector ────────── */
 
-  a {
-    color: #333;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
-const VoiceSelectWrapper = styled.div`
+const VoiceSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 18px;
   width: 100%;
+  max-width: 560px;
 `;
 
 const VoiceLabel = styled.p`
-  font-size: 1.1em;
-  color: #555;
+  font-size: 1em;
+  color: #666;
   margin: 0;
 `;
 
-const VoiceButtons = styled.div`
+const VoiceBtns = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 10px;
 `;
 
-const VoiceButton = styled.button<{ $active: boolean }>`
-  padding: 10px 24px;
+const VoiceBtn = styled.button<{ $active: boolean }>`
+  padding: 9px 24px;
   border: 2px solid #abb7b7;
-  border-radius: 7px;
-  font-size: 1.2em;
+  border-radius: 8px;
+  font-size: 1em;
   font-weight: bold;
   cursor: pointer;
-  background: ${({ $active }) => ($active ? '#abb7b7' : 'white')};
-  color: ${({ $active }) => ($active ? 'white' : '#555')};
-  transition: background 0.2s, color 0.2s;
-
+  background: ${({ $active }) => ($active ? "#abb7b7" : "white")};
+  color: ${({ $active }) => ($active ? "white" : "#666")};
+  transition:
+    background 0.2s,
+    color 0.2s;
   &:hover {
     background: #abb7b7;
     color: white;
   }
 `;
 
-const PreviewButton = styled.button`
+const PreviewBtn = styled.button`
   padding: 8px 20px;
   border: 2px solid #abb7b7;
-  border-radius: 7px;
-  font-size: 1em;
+  border-radius: 8px;
+  font-size: 0.95em;
   font-weight: bold;
   cursor: pointer;
   background: white;
-  color: #555;
-  transition: background 0.2s, color 0.2s;
-
+  color: #666;
+  transition:
+    background 0.2s,
+    color 0.2s;
   &:hover:not(:disabled) {
     background: #abb7b7;
     color: white;
   }
-
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 `;
+
+/* ────────── Footer ────────── */
+
+const FreepikFooter = styled.footer`
+  position: fixed;
+  bottom: 12px;
+  left: 14px;
+  font-size: 0.8em;
+  color: #aaa;
+  z-index: 10;
+
+  a {
+    color: #aaa;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+/* ────────── Component ────────── */
 
 interface GetStartedProps {
   user: User | null;
@@ -244,21 +298,19 @@ const GetStarted = ({ user }: GetStartedProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [storyTitle, setStoryTitle] = useState<string | null>(null);
   const [storyContent, setStoryContent] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [voiceGender, setVoiceGender] = useState<'MALE' | 'FEMALE'>('FEMALE');
-  const [previewLoading, setPreviewLoading] = useState<boolean>(false);
-  const [previewPlaying, setPreviewPlaying] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [voiceGender, setVoiceGender] = useState<"MALE" | "FEMALE">("FEMALE");
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewPlaying, setPreviewPlaying] = useState(false);
   const previewAudioRef = React.useRef<HTMLAudioElement | null>(null);
   const previewBlobUrlRef = React.useRef<string | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      const file = e.target.files[0];
       setSelectedImage(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
+      reader.onloadend = () => setImagePreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -268,31 +320,27 @@ const GetStarted = ({ user }: GetStartedProps) => {
       alert("이미지를 먼저 업로드 해주세요.");
       return;
     }
-
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
-
     setLoading(true);
-
     try {
       const result = await storyApi.uploadImage(selectedImage, user.user_id);
       setStoryTitle(result.story_name);
       setStoryContent(result.story_content);
     } catch (error) {
-      const message = error instanceof Error ? error.message : '이미지 분석에 실패했습니다.';
-      alert(message);
+      alert(
+        error instanceof Error ? error.message : "이미지 분석에 실패했습니다.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const stopPreview = () => {
-    if (previewAudioRef.current) {
-      previewAudioRef.current.pause();
-      previewAudioRef.current = null;
-    }
+    previewAudioRef.current?.pause();
+    previewAudioRef.current = null;
     if (previewBlobUrlRef.current) {
       URL.revokeObjectURL(previewBlobUrlRef.current);
       previewBlobUrlRef.current = null;
@@ -319,32 +367,19 @@ const GetStarted = ({ user }: GetStartedProps) => {
       await audio.play();
       setPreviewPlaying(true);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'TTS 미리듣기에 실패했습니다.';
-      alert(message);
+      alert(
+        error instanceof Error ? error.message : "TTS 미리듣기에 실패했습니다.",
+      );
       setPreviewPlaying(false);
     } finally {
       setPreviewLoading(false);
     }
   };
 
-  const handleVoiceGenderChange = (gender: 'MALE' | 'FEMALE') => {
+  const handleVoiceGenderChange = (gender: "MALE" | "FEMALE") => {
     if (gender === voiceGender) return;
     stopPreview();
     setVoiceGender(gender);
-  };
-
-  const handleRegenerateClick = async () => {
-    if (!selectedImage) {
-      alert("이미지를 먼저 업로드 해주세요.");
-      return;
-    }
-
-    if (!user) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
-    await handleAnalyzeClick();
   };
 
   const handleSaveImageClick = async () => {
@@ -352,48 +387,53 @@ const GetStarted = ({ user }: GetStartedProps) => {
       alert("그림을 업로드해서 동화를 생성해 주세요.");
       return;
     }
-
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
-
     try {
       const result = await storyApi.saveStory(
         selectedImage,
         user.user_id,
         storyTitle,
         storyContent,
-        voiceGender
+        voiceGender,
       );
-      
-      const savedDate = new Date(result.created_at);
-      const formattedDate = savedDate.toLocaleString("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      
+      const formattedDate = new Date(result.created_at).toLocaleString(
+        "ko-KR",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        },
+      );
       alert(`동화 저장이 완료되었습니다.\n저장 일시: ${formattedDate}`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : '동화 저장에 실패했습니다.';
-      alert(message);
+      alert(
+        error instanceof Error ? error.message : "동화 저장에 실패했습니다.",
+      );
     }
   };
 
   return (
     <Container>
-      <LeftContainer>
-        <LeftForm>
-          {imagePreview && (
-            <ImagePreview src={imagePreview} alt="Selected file preview" />
+      <LeftPanel>
+        <LeftCard>
+          {imagePreview ? (
+            <ImagePreview src={imagePreview} alt="선택한 이미지 미리보기" />
+          ) : (
+            <ImagePlaceholder>
+              <span>사진을 선택해 주세요</span>
+            </ImagePlaceholder>
           )}
-        </LeftForm>
-        <ButtonContainer>
-          <label htmlFor="fileInput" aria-label="이미지 선택">
-            <Button as="span">사진 열기</Button>
+        </LeftCard>
+        <ButtonRow>
+          <label htmlFor="fileInput">
+            <Btn as="span" style={{ cursor: "pointer" }}>
+              사진 열기
+            </Btn>
           </label>
           <FileInput
             id="fileInput"
@@ -401,13 +441,14 @@ const GetStarted = ({ user }: GetStartedProps) => {
             accept="image/*"
             onChange={handleFileChange}
           />
-          <Button onClick={handleAnalyzeClick} disabled={loading}>
-            {loading ? "동화를 생성하는 중입니다!" : "동화 생성"}
-          </Button>
-        </ButtonContainer>
-      </LeftContainer>
-      <RightContainer>
-        <RightForm>
+          <Btn onClick={handleAnalyzeClick} disabled={loading}>
+            {loading ? "생성 중…" : "동화 생성"}
+          </Btn>
+        </ButtonRow>
+      </LeftPanel>
+
+      <RightPanel>
+        <RightCard>
           {loading ? (
             <StoryTitle>동화를 생성하는 중입니다!</StoryTitle>
           ) : storyTitle || storyContent ? (
@@ -416,54 +457,57 @@ const GetStarted = ({ user }: GetStartedProps) => {
               <StoryContent>{storyContent}</StoryContent>
             </>
           ) : (
-            <StoryTitle>이미지를 업로드해서 동화를 생성해 주세요!</StoryTitle>
+            <StoryTitle style={{ margin: 0 }}>
+              이미지를 업로드해서
+              <br />
+              동화를 생성해 주세요!
+            </StoryTitle>
           )}
-        </RightForm>
+        </RightCard>
+
         {storyTitle && storyContent && (
           <>
-            <VoiceSelectWrapper>
+            <VoiceSection>
               <VoiceLabel>목소리 선택</VoiceLabel>
-              <VoiceButtons>
-                <VoiceButton
-                  $active={voiceGender === 'FEMALE'}
-                  onClick={() => handleVoiceGenderChange('FEMALE')}
+              <VoiceBtns>
+                <VoiceBtn
+                  $active={voiceGender === "FEMALE"}
+                  onClick={() => handleVoiceGenderChange("FEMALE")}
                 >
                   여성
-                </VoiceButton>
-                <VoiceButton
-                  $active={voiceGender === 'MALE'}
-                  onClick={() => handleVoiceGenderChange('MALE')}
+                </VoiceBtn>
+                <VoiceBtn
+                  $active={voiceGender === "MALE"}
+                  onClick={() => handleVoiceGenderChange("MALE")}
                 >
                   남성
-                </VoiceButton>
-              </VoiceButtons>
-              <PreviewButton
+                </VoiceBtn>
+              </VoiceBtns>
+              <PreviewBtn
                 onClick={handlePreviewClick}
                 disabled={previewLoading || previewPlaying}
               >
-                {previewLoading ? '불러오는 중…' : '🔊 미리듣기'}
-              </PreviewButton>
+                {previewLoading ? "불러오는 중…" : "🔊 미리듣기"}
+              </PreviewBtn>
               {previewPlaying && (
-                <PreviewButton onClick={stopPreview}>
-                  ⏹ 정지
-                </PreviewButton>
+                <PreviewBtn onClick={stopPreview}>⏹ 정지</PreviewBtn>
               )}
-            </VoiceSelectWrapper>
-            <ButtonContainer>
-              <Button onClick={handleRegenerateClick} disabled={loading}>
+            </VoiceSection>
+            <ButtonRow style={{ maxWidth: "560px" }}>
+              <Btn onClick={handleAnalyzeClick} disabled={loading}>
                 재생성
-              </Button>
-              <Button onClick={handleSaveImageClick}>동화 저장</Button>
-            </ButtonContainer>
+              </Btn>
+              <Btn onClick={handleSaveImageClick}>동화 저장</Btn>
+            </ButtonRow>
           </>
         )}
-      </RightContainer>
-      <Footer>
+      </RightPanel>
+      <FreepikFooter>
         Designed by{" "}
         <a href="https://kr.freepik.com/free-vector/hand-drawn-winter-people-collection_20109680.htm">
           Freepik
         </a>
-      </Footer>
+      </FreepikFooter>
     </Container>
   );
 };
