@@ -10,92 +10,84 @@ const Style = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url(${backgroundImage});
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
   min-height: 100vh;
-  background-color: rgba(255, 255, 255, 0.5);
+
+  background-image: url(${backgroundImage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(255,255,255,0.5);
   background-blend-mode: lighten;
 
   h1 {
-    margin-top: 180px;
-    font-size: 2.2em;
-
-    @media (max-width: 768px) {
-      margin-top: 100px;
-      font-size: 1.8em;
-    }
+    margin-top: 120px;
+    font-size: clamp(1.6em, 4vw, 2.2em);
+    @media (max-width: 768px) { margin-top: 60px; }
   }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 400px;
-
-  @media (max-width: 768px) {
-    width: 90%;
-  }
+  width: min(400px, 90vw);
+  padding: 0 4px;
 `;
 
 const Input = styled.input`
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1.2em;
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: clamp(1em, 2.5vw, 1.15em);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
 
-  @media (max-width: 768px) {
-    padding: 15px;
-    font-size: 1em;
+  &:focus {
+    border-color: #abb7b7;
+    box-shadow: 0 0 0 3px rgba(171,183,183,0.2);
   }
 `;
 
 const Button = styled.button`
-  margin-top: 30px;
+  margin-top: 24px;
   padding: 15px;
-  text-decoration: none;
-  font-size: 1.5em;
-  background-color: white;
-  cursor: pointer;
+  font-size: clamp(1.1em, 3vw, 1.4em);
   background: #abb7b7;
   border: 2px solid #abb7b7;
   font-weight: bold;
-  border-radius: 7px;
+  border-radius: 8px;
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: background 0.25s, color 0.25s, transform 0.2s;
 
   &:hover {
     background: #fff;
     color: #abb7b7;
-    transform: scale(1.02);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
   }
 
-  @media (max-width: 768px) {
-    padding: 10px;
-    font-size: 1.2em;
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
 const LinkContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
-  width: 400px;
+  margin-top: 16px;
+  width: min(400px, 90vw);
   color: ${color.lightGray};
-  font-size: 1.2em;
+  font-size: clamp(0.9em, 2.2vw, 1.1em);
+  padding: 0 4px;
 
   a {
     text-decoration: none;
     color: ${color.lightGray};
-  }
-
-  @media (max-width: 768px) {
-    width: 90%;
-    font-size: 1em;
+    transition: color 0.2s;
+    &:hover { color: #7a9a9a; text-decoration: underline; }
   }
 `;
 
@@ -106,27 +98,22 @@ interface LoginProps {
 const Login = ({ setUser }: LoginProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const data = await authApi.login(username, password);
-      setUser({
-        name: data.name,
-        user_id: data.user_id,
-      });
+      setUser({ name: data.name, user_id: data.user_id });
       navigate("/");
     } catch (error) {
-      console.error('Error:', error);
       const message = error instanceof Error ? error.message : '아이디 또는 비밀번호가 잘못되었습니다.';
       alert(message);
     } finally {
       setLoading(false);
-      setPassword(''); // 로그인 후 비밀번호 즉시 초기화
+      setPassword('');
     }
   };
 
@@ -147,7 +134,7 @@ const Login = ({ setUser }: LoginProps) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button type="submit" disabled={loading}>
-          {loading ? "로그인 중 ..." : "로그인"}
+          {loading ? "로그인 중…" : "로그인"}
         </Button>
       </Form>
       <LinkContainer>
