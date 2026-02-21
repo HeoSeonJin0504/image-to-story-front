@@ -175,27 +175,18 @@ const SignUp = () => {
   const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
 
   const validateUsername = (username: string) => {
-    const usernameRegex = /^[a-z][a-z0-9_]{4,19}$/;
-    return usernameRegex.test(username);
+    // 임시 완화: 3자 이상이면 허용
+    return username.length >= 3;
   };
 
   const validatePassword = (password: string) => {
-    const lengthRegex = /^.{8,16}$/;
-    const combinationRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])|(?=.*[a-zA-Z])(?=.*[!@#])|(?=.*[0-9])(?=.*[!@#])/;
-    const noSpaceRegex = /^\S*$/;
-    const noRepeatRegex = /^(?!.*(.)\1{2}).*$/;
-
-    return (
-      lengthRegex.test(password) &&
-      combinationRegex.test(password) &&
-      noSpaceRegex.test(password) &&
-      noRepeatRegex.test(password)
-    );
+    // 임시 완화: 4자 이상이면 허용
+    return password.length >= 4;
   };
 
   const handleCheckDuplicate = async () => {
     if (!validateUsername(username)) {
-      alert("아이디는 5~20자여야 하며 영어 소문자, 숫자, 특수문자(_)가 가능하고 첫 글자는 반드시 영어여야 합니다!");
+      alert("아이디는 3자 이상이어야 합니다.");
       return;
     }
 
@@ -229,7 +220,7 @@ const SignUp = () => {
     }
 
     if (!validateUsername(username)) {
-      alert("아이디는 5~20자여야 하며 영어 소문자, 숫자, 특수문자(_)가 가능하고 첫 글자는 반드시 영어여야 합니다.");
+      alert("아이디는 3자 이상이어야 합니다.");
       return;
     }
 
@@ -239,7 +230,7 @@ const SignUp = () => {
     }
 
     if (!validatePassword(password)) {
-      alert("비밀번호는 8~16자여야 하며 영문 대소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 하며, 공백 및 연속된 문자가 없어야 합니다.");
+      alert("비밀번호는 4자 이상이어야 합니다.");
       return;
     }
 
