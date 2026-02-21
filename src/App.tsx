@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Home, GetStarted, Introduce, Login, SignUp, Team, FindId, FindPw, MyPage } from "./pages";
+import { Home, GetStarted, Introduce, Login, SignUp, Team, MyPage } from "./pages";
 import { Header, Footer } from "./components";
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -83,8 +83,6 @@ function App() {
           <Route path="/team" element={<Team />} />
           <Route path="/get-started" element={<GetStarted user={user} />} />
           <Route path="/mypage" element={<MyPage user={user} />} />
-          <Route path="/find-id" element={<FindId />} />
-          <Route path="/find-pw" element={<FindPw />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Footer />

@@ -16,13 +16,15 @@ const Style = styled.div`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
   background-blend-mode: lighten;
 
   h1 {
     margin-top: 120px;
     font-size: clamp(1.6em, 4vw, 2.2em);
-    @media (max-width: 768px) { margin-top: 60px; }
+    @media (max-width: 768px) {
+      margin-top: 60px;
+    }
   }
 `;
 
@@ -39,12 +41,14 @@ const Input = styled.input`
   border: 1.5px solid #ddd;
   border-radius: 8px;
   font-size: clamp(1em, 2.5vw, 1.15em);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   outline: none;
 
   &:focus {
     border-color: #abb7b7;
-    box-shadow: 0 0 0 3px rgba(171,183,183,0.2);
+    box-shadow: 0 0 0 3px rgba(171, 183, 183, 0.2);
   }
 `;
 
@@ -58,8 +62,11 @@ const Button = styled.button`
   border-radius: 8px;
   color: white;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: background 0.25s, color 0.25s, transform 0.2s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition:
+    background 0.25s,
+    color 0.25s,
+    transform 0.2s;
 
   &:hover {
     background: #fff;
@@ -87,7 +94,10 @@ const LinkContainer = styled.div`
     text-decoration: none;
     color: ${color.lightGray};
     transition: color 0.2s;
-    &:hover { color: #7a9a9a; text-decoration: underline; }
+    &:hover {
+      color: #7a9a9a;
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -96,8 +106,8 @@ interface LoginProps {
 }
 
 const Login = ({ setUser }: LoginProps) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -109,11 +119,14 @@ const Login = ({ setUser }: LoginProps) => {
       setUser({ name: data.name, user_id: data.user_id });
       navigate("/");
     } catch (error) {
-      const message = error instanceof Error ? error.message : '아이디 또는 비밀번호가 잘못되었습니다.';
+      const message =
+        error instanceof Error
+          ? error.message
+          : "아이디 또는 비밀번호가 잘못되었습니다.";
       alert(message);
     } finally {
       setLoading(false);
-      setPassword('');
+      setPassword("");
     }
   };
 
@@ -138,8 +151,6 @@ const Login = ({ setUser }: LoginProps) => {
         </Button>
       </Form>
       <LinkContainer>
-        <Link to="/find-id">아이디 찾기</Link>
-        <Link to="/find-pw">비밀번호 찾기</Link>
         <Link to="/signup">회원가입</Link>
       </LinkContainer>
     </Style>
