@@ -9,89 +9,87 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  padding: 40px 20px;
+  min-height: calc(100vh - 70px);
+  padding: 40px 24px 60px;
   position: relative;
 
-  &:before {
+  &::before {
     content: "";
     position: absolute;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: -1;
-    top: 0;
-    left: 0;
     background-image: url(${backgroundImage});
     background-size: cover;
-    background-position: bottom;
+    background-position: bottom center;
     background-repeat: no-repeat;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.55);
     background-blend-mode: lighten;
   }
 
   @media (max-width: 768px) {
-    padding: 20px 10px;
+    padding: 24px 16px 40px;
   }
 `;
 
 const Title = styled.h1`
-  font-size: 2.5em;
-  margin-bottom: 40px;
+  font-size: clamp(1.6em, 3.5vw, 2.4em);
+  margin-bottom: 32px;
   color: #343a40;
 
   @media (max-width: 768px) {
-    font-size: 2em;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 `;
 
 const StoriesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
   width: 100%;
   max-width: 1200px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 640px) {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
 `;
 
 const StoryCard = styled.div`
-  background-color: white;
-  border: 2px solid #abb7b7;
-  border-radius: 10px;
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #dce0e0;
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   cursor: pointer;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
   }
 `;
 
 const StoryImage = styled.img`
   width: 100%;
-  height: 250px;
+  height: 220px;
   object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #eee;
 `;
 
 const StoryTitle = styled.h2`
-  font-size: 1.8em;
-  margin-bottom: 10px;
+  font-size: clamp(1.1em, 2.5vw, 1.5em);
+  margin-bottom: 8px;
   color: #343a40;
 `;
 
 const StoryContent = styled.p`
-  font-size: 1.2em;
+  font-size: clamp(0.9em, 1.8vw, 1.1em);
   line-height: 1.6;
   color: #555;
   margin-bottom: 10px;
@@ -99,96 +97,93 @@ const StoryContent = styled.p`
 `;
 
 const StoryDate = styled.p`
-  font-size: 1em;
-  color: #888;
+  font-size: 0.88em;
+  color: #999;
   margin-top: auto;
   padding-top: 10px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #f0f0f0;
 `;
 
-// 모달 스타일
 const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    align-items: flex-start;
+  }
 `;
 
 const ModalContent = styled.div`
-  background-color: white;
-  border-radius: 10px;
-  padding: 30px;
-  max-width: 800px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 720px;
   position: relative;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  margin: auto;
 
   @media (max-width: 768px) {
-    padding: 20px;
-    width: 95%;
+    padding: 20px 16px;
   }
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   background: #f5f5f5;
-  border: 2px solid #ddd;
-  width: 40px;
-  height: 40px;
+  border: 1.5px solid #ddd;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  font-size: 1.8em;
+  font-size: 1.3em;
   cursor: pointer;
-  color: #555;
+  color: #666;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  transition: all 0.3s;
-  
+  transition:
+    background 0.2s,
+    transform 0.2s;
   &:hover {
     background: #e0e0e0;
-    color: #000;
-    border-color: #999;
     transform: scale(1.1);
   }
 `;
 
 const ModalImage = styled.img`
   width: 100%;
-  max-height: 400px;
+  max-height: 360px;
   object-fit: contain;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  border: 1px solid #eee;
 `;
 
 const DeleteButton = styled.button`
-  margin-top: 20px;
-  padding: 12px 24px;
-  background-color: #d9534f;
+  padding: 11px 22px;
+  background: #e05252;
   color: white;
   border: none;
-  border-radius: 5px;
-  font-size: 1.2em;
+  border-radius: 8px;
+  font-size: clamp(0.9em, 2vw, 1.1em);
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
-
+  transition: background 0.2s;
   &:hover {
-    background-color: #c9302c;
+    background: #c0392b;
   }
-
   &:disabled {
-    background-color: #ccc;
+    background: #ccc;
     cursor: not-allowed;
   }
 `;
@@ -197,46 +192,30 @@ const ModalFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  padding-top: 20px;
+  margin-top: 18px;
+  padding-top: 16px;
   border-top: 1px solid #eee;
+  flex-wrap: wrap;
+  gap: 10px;
 `;
 
-const LoadingMessage = styled.div`
-  font-size: 1.5em;
-  color: #555;
+const StateMessage = styled.div<{ $error?: boolean }>`
+  font-size: clamp(1em, 2.5vw, 1.4em);
+  color: ${({ $error }) => ($error ? "#e05252" : "#666")};
   text-align: center;
-  padding: 40px;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  border: 2px solid ${({ $error }) => ($error ? "#e05252" : "#dce0e0")};
 `;
 
-const ErrorMessage = styled.div`
-  font-size: 1.5em;
-  color: #d9534f;
-  text-align: center;
-  padding: 40px;
-`;
-
-const EmptyMessage = styled.div`
-  font-size: 1.5em;
-  color: #555;
-  text-align: center;
-  padding: 40px;
-  background-color: white;
-  border-radius: 10px;
-  border: 2px solid #abb7b7;
-`;
-
-const Footer = styled.footer`
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-size: 1em;
-  color: #333;
-
+const FreepikFooter = styled.footer`
+  margin-top: 32px;
+  font-size: 0.8em;
+  color: #999;
   a {
-    color: #333;
+    color: #999;
     text-decoration: none;
-
     &:hover {
       text-decoration: underline;
     }
@@ -249,11 +228,11 @@ interface MyPageProps {
 
 const MyPage = ({ user }: MyPageProps) => {
   const [stories, setStories] = useState<StoryListItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryDetail | null>(null);
-  const [detailLoading, setDetailLoading] = useState<boolean>(false);
-  const [deleting, setDeleting] = useState<boolean>(false);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -262,7 +241,6 @@ const MyPage = ({ user }: MyPageProps) => {
         setLoading(false);
         return;
       }
-
       try {
         const data = await storyApi.getMyStories(user.user_id);
         setStories(data);
@@ -272,7 +250,6 @@ const MyPage = ({ user }: MyPageProps) => {
         setLoading(false);
       }
     };
-
     fetchStories();
   }, [user]);
 
@@ -288,27 +265,19 @@ const MyPage = ({ user }: MyPageProps) => {
     }
   };
 
-  const handleCloseModal = () => {
-    setSelectedStory(null);
-  };
-
   const handleDeleteStory = async () => {
     if (!selectedStory) return;
-
-    const confirmed = window.confirm(
-      `"${selectedStory.story_name}"을(를) 정말 삭제하시겠습니까?\n삭제한 동화는 복구할 수 없습니다.`
-    );
-
-    if (!confirmed) return;
-
+    if (
+      !window.confirm(
+        `"${selectedStory.story_name}"을(를) 정말 삭제하시겠습니까?\n삭제한 동화는 복구할 수 없습니다.`,
+      )
+    )
+      return;
     setDeleting(true);
     try {
       await storyApi.deleteStory(selectedStory.story_id);
-      
-      setStories(stories.filter(story => story.story_id !== selectedStory.story_id));
-      
+      setStories(stories.filter((s) => s.story_id !== selectedStory.story_id));
       setSelectedStory(null);
-      
       alert("동화가 성공적으로 삭제되었습니다.");
     } catch (err) {
       alert(err instanceof Error ? err.message : "동화 삭제에 실패했습니다.");
@@ -317,9 +286,8 @@ const MyPage = ({ user }: MyPageProps) => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("ko-KR", {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleString("ko-KR", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -327,36 +295,22 @@ const MyPage = ({ user }: MyPageProps) => {
       minute: "2-digit",
       hour12: true,
     });
-  };
-
-  if (loading) {
-    return (
-      <Container>
-        <Title>나의 동화</Title>
-        <LoadingMessage>동화 목록을 불러오는 중...</LoadingMessage>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Title>나의 동화</Title>
-        <ErrorMessage>{error}</ErrorMessage>
-      </Container>
-    );
-  }
 
   return (
     <Container>
       <Title>나의 동화</Title>
-      {stories.length === 0 ? (
-        <EmptyMessage>저장된 동화가 없습니다.</EmptyMessage>
+
+      {loading ? (
+        <StateMessage>동화 목록을 불러오는 중...</StateMessage>
+      ) : error ? (
+        <StateMessage $error>{error}</StateMessage>
+      ) : stories.length === 0 ? (
+        <StateMessage>저장된 동화가 없습니다.</StateMessage>
       ) : (
         <StoriesGrid>
           {stories.map((story) => (
-            <StoryCard 
-              key={story.story_id} 
+            <StoryCard
+              key={story.story_id}
               onClick={() => handleCardClick(story.story_id)}
             >
               <StoryImage
@@ -364,7 +318,7 @@ const MyPage = ({ user }: MyPageProps) => {
                 alt={story.story_name}
                 onError={(e) => {
                   (e.target as HTMLImageElement).src =
-                    "https://via.placeholder.com/350x250?text=Image+Not+Found";
+                    "https://placehold.co/350x220?text=Image+Not+Found";
                 }}
               />
               <StoryTitle>{story.story_name}</StoryTitle>
@@ -374,17 +328,16 @@ const MyPage = ({ user }: MyPageProps) => {
         </StoriesGrid>
       )}
 
-      {/* 상세 정보 모달 */}
       {selectedStory && (
-        <ModalOverlay onClick={handleCloseModal}>
+        <ModalOverlay onClick={() => setSelectedStory(null)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
-            <CloseButton onClick={handleCloseModal}>×</CloseButton>
+            <CloseButton onClick={() => setSelectedStory(null)}>×</CloseButton>
             <ModalImage
               src={selectedStory.image_url}
               alt={selectedStory.story_name}
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
-                  "https://via.placeholder.com/800x400?text=Image+Not+Found";
+                  "https://placehold.co/350x220?text=Image+Not+Found";
               }}
             />
             <StoryTitle>{selectedStory.story_name}</StoryTitle>
@@ -395,25 +348,27 @@ const MyPage = ({ user }: MyPageProps) => {
             <ModalFooter>
               <StoryDate>{formatDate(selectedStory.created_at)}</StoryDate>
               <DeleteButton onClick={handleDeleteStory} disabled={deleting}>
-                {deleting ? "삭제 중..." : "동화 삭제"}
+                {deleting ? "삭제 중…" : "동화 삭제"}
               </DeleteButton>
             </ModalFooter>
           </ModalContent>
         </ModalOverlay>
       )}
 
-      {/* 로딩 모달 */}
       {detailLoading && (
         <ModalOverlay>
-          <LoadingMessage>동화 내용을 불러오는 중...</LoadingMessage>
+          <StateMessage style={{ alignSelf: "center" }}>
+            동화 내용을 불러오는 중...
+          </StateMessage>
         </ModalOverlay>
       )}
-      <Footer>
+
+      <FreepikFooter>
         Designed by{" "}
         <a href="https://kr.freepik.com/free-vector/hand-drawn-winter-people-collection_20109680.htm">
           Freepik
         </a>
-      </Footer>
+      </FreepikFooter>
     </Container>
   );
 };
