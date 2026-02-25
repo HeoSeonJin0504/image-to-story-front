@@ -8,10 +8,10 @@ import { User } from "../types/user";
 
 const Container = styled.div`
   display: flex;
-  padding: 24px 24px 48px;
+  padding: 32px 40px 56px;
   position: relative;
   min-height: calc(100vh - 70px);
-  gap: 24px;
+  gap: 32px;
   box-sizing: border-box;
 
   &::before {
@@ -35,7 +35,7 @@ const Container = styled.div`
 `;
 
 const LeftPanel = styled.div`
-  flex: 1;
+  flex: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,11 +43,12 @@ const LeftPanel = styled.div`
 
   @media (max-width: 768px) {
     padding-top: 0;
+    flex: unset;
   }
 `;
 
 const RightPanel = styled.div`
-  flex: 2;
+  flex: 7;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,6 +56,7 @@ const RightPanel = styled.div`
 
   @media (max-width: 768px) {
     padding-top: 0;
+    flex: unset;
   }
 `;
 
@@ -70,28 +72,32 @@ const Card = styled.div`
 `;
 
 const LeftCard = styled(Card)`
-  max-width: 420px;
-  min-height: 300px;
+  width: 100%;
+  max-width: 560px;
+  height: 460px;          /* PC: 고정 높이 — 이미지 크기에 흔들리지 않음 */
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 
   @media (max-width: 768px) {
+    height: auto;          /* 모바일: 동적 높이 */
     min-height: 200px;
     max-width: 100%;
   }
 `;
 
 const RightCard = styled(Card)`
-  max-width: 560px;
-  min-height: 300px;
+  width: 100%;
+  max-width: 720px;
+  min-height: 460px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* 항상 상하 중앙 */
+  justify-content: center;
   text-align: center;
   overflow-y: auto;
-  max-height: 65vh;
+  max-height: 70vh;
 
   @media (max-width: 768px) {
     max-height: none;
@@ -108,7 +114,7 @@ const FileInput = styled.input`
 
 const ImagePreview = styled.img`
   width: 100%;
-  max-height: 280px;
+  height: 100%;
   object-fit: contain;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -116,7 +122,7 @@ const ImagePreview = styled.img`
 
 const ImagePlaceholder = styled.div`
   width: 100%;
-  height: 200px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -128,7 +134,7 @@ const ImagePlaceholder = styled.div`
   border-radius: 10px;
 
   @media (max-width: 768px) {
-    height: 140px;
+    height: 180px;
   }
 `;
 
@@ -142,7 +148,7 @@ const ButtonRow = styled.div`
   margin-top: 16px;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 420px;
+  max-width: 560px;
 
   @media (max-width: 768px) {
     margin-top: 14px;
@@ -211,7 +217,7 @@ const VoiceSection = styled.div`
   gap: 10px;
   margin-top: 18px;
   width: 100%;
-  max-width: 560px;
+  max-width: 720px;
 `;
 
 const VoiceLabel = styled.p`
@@ -494,7 +500,7 @@ const GetStarted = ({ user }: GetStartedProps) => {
                 <PreviewBtn onClick={stopPreview}>⏹ 정지</PreviewBtn>
               )}
             </VoiceSection>
-            <ButtonRow style={{ maxWidth: "560px" }}>
+            <ButtonRow style={{ maxWidth: "720px" }}>
               <Btn onClick={handleAnalyzeClick} disabled={loading}>
                 재생성
               </Btn>
