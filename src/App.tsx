@@ -13,16 +13,6 @@ const Style = styled.main`
   min-height: 100vh;
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  font-size: 1.5em;
-  color: #555;
-`;
-
 // auth:expired 이벤트를 React Router로 처리하는 내부 컴포넌트
 // BrowserRouter 안에 있어야 useNavigate 사용 가능
 const AuthExpiredHandler = ({ setUser }: { setUser: (user: User | null) => void }) => {
@@ -43,7 +33,6 @@ const AuthExpiredHandler = ({ setUser }: { setUser: (user: User | null) => void 
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -58,17 +47,11 @@ function App() {
         }
       } catch {
         // 처음 방문 또는 토큰 만료 시 정상 동작
-      } finally {
-        setIsInitializing(false);
       }
     };
 
     initAuth();
   }, []);
-
-  if (isInitializing) {
-    return <LoadingContainer>로딩 중...</LoadingContainer>;
-  }
 
   return (
     <BrowserRouter>
