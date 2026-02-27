@@ -81,6 +81,34 @@ const Button = styled.button`
   }
 `;
 
+const TestLoginButton = styled.button`
+  margin-top: 12px;
+  padding: 13px;
+  font-size: clamp(0.95em, 2.5vw, 1.15em);
+  background: transparent;
+  border: 2px solid #abb7b7;
+  font-weight: 600;
+  border-radius: 8px;
+  color: #abb7b7;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    transform 0.2s;
+
+  &:hover {
+    background: #abb7b7;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
 const LinkContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -104,6 +132,9 @@ const LinkContainer = styled.div`
 interface LoginProps {
   setUser: (user: User | null) => void;
 }
+
+const TEST_USERNAME = import.meta.env.VITE_TEST_USERNAME as string;
+const TEST_PASSWORD = import.meta.env.VITE_TEST_PASSWORD as string;
 
 const Login = ({ setUser }: LoginProps) => {
   const [username, setUsername] = useState("");
@@ -130,6 +161,23 @@ const Login = ({ setUser }: LoginProps) => {
     }
   };
 
+  const handleTestLogin = async () => {
+    setLoading(true);
+    try {
+      const data = await authApi.login(TEST_USERNAME, TEST_PASSWORD);
+      setUser({ name: data.name, user_id: data.user_id });
+      navigate("/");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "테스트 계정 로그인에 실패했습니다.";
+      alert(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Style>
       <h1>로그인</h1>
@@ -149,6 +197,9 @@ const Login = ({ setUser }: LoginProps) => {
         <Button type="submit" disabled={loading}>
           {loading ? "로그인 중…" : "로그인"}
         </Button>
+        <TestLoginButton type="button" onClick={handleTestLogin} disabled={loading}>
+          테스트 계정으로 로그인
+        </TestLoginButton>
       </Form>
       <LinkContainer>
         <Link to="/signup">회원가입</Link>
