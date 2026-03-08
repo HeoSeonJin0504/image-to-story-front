@@ -232,9 +232,10 @@ const FreepikFooter = styled.footer`
 
 interface MyPageProps {
   user: User | null;
+  isAuthReady: boolean;
 }
 
-const MyPage = ({ user }: MyPageProps) => {
+const MyPage = ({ user, isAuthReady }: MyPageProps) => {
   const [stories, setStories] = useState<StoryListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -244,6 +245,7 @@ const MyPage = ({ user }: MyPageProps) => {
 
   useEffect(() => {
     const fetchStories = async () => {
+      if (!isAuthReady) return;
       if (!user) {
         setError("로그인이 필요합니다.");
         setLoading(false);
@@ -259,7 +261,7 @@ const MyPage = ({ user }: MyPageProps) => {
       }
     };
     fetchStories();
-  }, [user]);
+  }, [user, isAuthReady]);
 
   const handleCardClick = async (storyId: number) => {
     setDetailLoading(true);

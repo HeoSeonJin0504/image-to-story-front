@@ -33,6 +33,7 @@ const AuthExpiredHandler = ({ setUser }: { setUser: (user: User | null) => void 
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -47,6 +48,8 @@ function App() {
         }
       } catch {
         // 처음 방문 또는 토큰 만료 시 정상 동작
+      } finally {
+        setIsAuthReady(true);
       }
     };
 
@@ -65,7 +68,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/team" element={<Team />} />
           <Route path="/get-started" element={<GetStarted user={user} />} />
-          <Route path="/mypage" element={<MyPage user={user} />} />
+          <Route path="/mypage" element={<MyPage user={user} isAuthReady={isAuthReady} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Footer />
