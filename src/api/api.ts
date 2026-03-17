@@ -1,4 +1,4 @@
-import { tokenManager } from './token';
+import { tokenManager } from "./token";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -6,8 +6,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const refreshAccessToken = async (): Promise<boolean> => {
   try {
     const response = await fetch(`${API_BASE_URL}/refresh`, {
-      method: 'POST',
-      credentials: 'include',
+      method: "POST",
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -15,7 +15,7 @@ const refreshAccessToken = async (): Promise<boolean> => {
     }
 
     const data = await response.json();
-    
+
     if (data.accessToken) {
       tokenManager.setAccessToken(data.accessToken);
       return true;
@@ -30,30 +30,37 @@ const refreshAccessToken = async (): Promise<boolean> => {
 export const authenticatedFetch = async (
   url: string,
   options: RequestInit = {},
-  retryCount = 0
+  retryCount = 0,
 ): Promise<Response> => {
   const token = tokenManager.getAccessToken();
-  
+
   const headers = new Headers(options.headers);
   if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
   const response = await fetch(url, {
     ...options,
     headers,
-    credentials: 'include',
+    credentials: "include",
   });
 
   if (response.status === 401 && retryCount === 0) {
+    // 로그아웃 상태면 refresh 요청 자체를 안 함
+    if (!tokenManager.isAuthenticated()) {
+      window.dispatchEvent(new CustomEvent("auth:expired"));
+      throw new Error("인증이 만료되었습니다. 다시 로그인해주세요.");
+    }
+
     const refreshSuccess = await refreshAccessToken();
-    
+    // ... 나머지 동일
+
     if (refreshSuccess) {
       return authenticatedFetch(url, options, retryCount + 1);
     } else {
       tokenManager.clearAccessToken();
-      window.dispatchEvent(new CustomEvent('auth:expired'));
-      throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+      window.dispatchEvent(new CustomEvent("auth:expired"));
+      throw new Error("인증이 만료되었습니다. 다시 로그인해주세요.");
     }
   }
 
@@ -63,10 +70,10 @@ export const authenticatedFetch = async (
 // 일반 fetch (인증 불필요)
 export const publicFetch = async (
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> => {
   return fetch(url, {
     ...options,
-    credentials: 'include',
+    credentials: "include",
   });
 };

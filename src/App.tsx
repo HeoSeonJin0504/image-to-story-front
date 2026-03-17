@@ -40,7 +40,7 @@ function App() {
       try {
         const data = await authApi.refresh();
         
-        if (data.user_id && data.name) {
+        if (data && data.user_id && data.name) {
           setUser({
             name: data.name,
             user_id: data.user_id,
