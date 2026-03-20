@@ -35,6 +35,12 @@ export interface StorySaveResponse {
   created_at: string;
 }
 
+export interface DemoResponse {
+  story_name: string;
+  story_content: string;
+  image_url: string;
+}
+
 export const storyApi = {
   // 이미지 업로드 및 동화 생성
   uploadImage: async (file: File, userId: number): Promise<ImageUploadResponse> => {
@@ -152,5 +158,44 @@ export const storyApi = {
       }
       throw new Error('동화 삭제에 실패했습니다.');
     }
+  },
+
+  // 데모 동화 생성 (이미지 업로드 불필요)
+  getDemo: async (): Promise<DemoResponse> => {
+    const response = await authenticatedFetch(`${API_BASE_URL}/demo`, {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '데모 체험이 일시적으로 사용 불가능합니다. 1시간에 3회까지 가능합니다.');
+      }
+      throw new Error('데모 동화 생성에 실패했습니다.');
+    }
+
+    return response.json();
+  },
+
+  // 데모 TTS 미리듣기
+  demoTtsPreview: async (
+    storyContent: string,
+    voiceGender: 'MALE' | 'FEMALE' = 'FEMALE'
+  ): Promise<Blob> => {
+    const response = await authenticatedFetch(`${API_BASE_URL}/demo-tts-preview`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ story_content: storyContent, voice_gender: voiceGender }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'TTS 미리듣기 요청이 너무 많습니다. 1시간에 3회까지 가능합니다.');
+      }
+      throw new Error('TTS 미리듣기에 실패했습니다.');
+    }
+
+    return response.blob();
   },
 };

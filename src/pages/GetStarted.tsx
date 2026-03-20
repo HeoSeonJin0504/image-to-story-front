@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import backgroundImage from "../photos/getstartedbackground.png";
 import { storyApi } from "../api/story";
 import { User } from "../types/user";
+import { useSearchParams, useNavigate } from "react-router-dom";
+
+const DEMO_IMAGE_URL = "/demo.png";
 
 /* ────────── Layout ────────── */
 
@@ -301,16 +304,38 @@ interface GetStartedProps {
 }
 
 const GetStarted = ({ user }: GetStartedProps) => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const isDemoMode = searchParams.get('demo') === 'true';
+
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [storyTitle, setStoryTitle] = useState<string | null>(null);
   const [storyContent, setStoryContent] = useState<string | null>(null);
+  const [storyImageUrl, setStoryImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [voiceGender, setVoiceGender] = useState<"MALE" | "FEMALE">("FEMALE");
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const previewAudioRef = React.useRef<HTMLAudioElement | null>(null);
   const previewBlobUrlRef = React.useRef<string | null>(null);
+
+  // 데모 모드이고 사용자가 없으면 로그인 페이지로 이동
+  useEffect(() => {
+    if (isDemoMode && !user) {
+      navigate('/login');
+    }
+  }, [isDemoMode, user, navigate]);
+
+  useEffect(() => {
+    if (!isDemoMode) {
+      stopPreview();
+      setStoryTitle(null);
+      setStoryContent(null);
+      setStoryImageUrl(null);
+      setVoiceGender("FEMALE");
+    }
+  }, [isDemoMode]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -323,23 +348,31 @@ const GetStarted = ({ user }: GetStartedProps) => {
   };
 
   const handleAnalyzeClick = async () => {
-    if (!selectedImage) {
-      alert("이미지를 먼저 업로드 해주세요.");
-      return;
-    }
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
+
+    if (!isDemoMode && !selectedImage) {
+      alert("이미지를 먼저 업로드 해주세요.");
+      return;
+    }
+
     setLoading(true);
     try {
-      const result = await storyApi.uploadImage(selectedImage, user.user_id);
+      let result;
+      if (isDemoMode) {
+        result = await storyApi.getDemo();
+        const nextDemoImageUrl = result.image_url?.trim();
+        setStoryImageUrl(nextDemoImageUrl || null);
+      } else {
+        result = await storyApi.uploadImage(selectedImage!, user.user_id);
+      }
       setStoryTitle(result.story_name);
       setStoryContent(result.story_content);
     } catch (error) {
-      alert(
-        error instanceof Error ? error.message : "이미지 분석에 실패했습니다.",
-      );
+      const message = error instanceof Error ? error.message : "생성에 실패했습니다.";
+      alert(message);
     } finally {
       setLoading(false);
     }
@@ -360,7 +393,8 @@ const GetStarted = ({ user }: GetStartedProps) => {
     stopPreview();
     setPreviewLoading(true);
     try {
-      const blob = await storyApi.ttsPreview(storyContent, voiceGender);
+      const ttsFunction = isDemoMode ? storyApi.demoTtsPreview : storyApi.ttsPreview;
+      const blob = await ttsFunction(storyContent, voiceGender);
       const url = URL.createObjectURL(blob);
       previewBlobUrlRef.current = url;
       const audio = new Audio(url);
@@ -374,9 +408,8 @@ const GetStarted = ({ user }: GetStartedProps) => {
       await audio.play();
       setPreviewPlaying(true);
     } catch (error) {
-      alert(
-        error instanceof Error ? error.message : "TTS 미리듣기에 실패했습니다.",
-      );
+      const message = error instanceof Error ? error.message : "TTS 미리듣기에 실패했습니다.";
+      alert(message);
       setPreviewPlaying(false);
     } finally {
       setPreviewLoading(false);
@@ -418,17 +451,28 @@ const GetStarted = ({ user }: GetStartedProps) => {
       );
       alert(`동화 저장이 완료되었습니다.\n저장 일시: ${formattedDate}`);
     } catch (error) {
-      alert(
-        error instanceof Error ? error.message : "동화 저장에 실패했습니다.",
-      );
+      const message = error instanceof Error ? error.message : "동화 저장에 실패했습니다.";
+      alert(message);
     }
   };
+
+  const demoPreviewSrc = storyImageUrl && storyImageUrl.trim().length > 0
+    ? storyImageUrl
+    : DEMO_IMAGE_URL;
 
   return (
     <Container>
       <LeftPanel>
         <LeftCard>
-          {imagePreview ? (
+          {isDemoMode ? (
+            <ImagePreview
+              src={demoPreviewSrc}
+              alt="데모 이미지"
+              onError={() => {
+                setStoryImageUrl(null);
+              }}
+            />
+          ) : imagePreview ? (
             <ImagePreview src={imagePreview} alt="선택한 이미지 미리보기" />
           ) : (
             <ImagePlaceholder>
@@ -436,28 +480,37 @@ const GetStarted = ({ user }: GetStartedProps) => {
             </ImagePlaceholder>
           )}
         </LeftCard>
-        <ButtonRow>
-          <label htmlFor="fileInput">
-            <Btn as="span" style={{ cursor: "pointer" }}>
-              사진 열기
+        {!isDemoMode && (
+          <ButtonRow>
+            <label htmlFor="fileInput">
+              <Btn as="span" style={{ cursor: "pointer" }}>
+                사진 열기
+              </Btn>
+            </label>
+            <FileInput
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            <Btn onClick={handleAnalyzeClick} disabled={loading}>
+              {loading ? "생성 중…" : "동화 생성"}
             </Btn>
-          </label>
-          <FileInput
-            id="fileInput"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          <Btn onClick={handleAnalyzeClick} disabled={loading}>
-            {loading ? "생성 중…" : "동화 생성"}
-          </Btn>
-        </ButtonRow>
+          </ButtonRow>
+        )}
+        {isDemoMode && (
+          <ButtonRow>
+            <Btn onClick={handleAnalyzeClick} disabled={loading}>
+              {loading ? "생성 중…" : "데모 이미지로 동화 생성"}
+            </Btn>
+          </ButtonRow>
+        )}
       </LeftPanel>
 
       <RightPanel>
         <RightCard>
           {loading ? (
-            <StoryTitle>동화를 생성하는 중입니다!</StoryTitle>
+            <StoryTitle>{isDemoMode ? "동화를 생성하는 중입니다!" : "동화를 생성하는 중입니다!"}</StoryTitle>
           ) : storyTitle || storyContent ? (
             <>
               <StoryTitle>{storyTitle}</StoryTitle>
@@ -465,9 +518,19 @@ const GetStarted = ({ user }: GetStartedProps) => {
             </>
           ) : (
             <StoryTitle style={{ margin: 0 }}>
-              이미지를 업로드해서
-              <br />
-              동화를 생성해 주세요!
+              {isDemoMode ? (
+                <>
+                  버튼을 누르면
+                  <br />
+                  동화가 생성됩니다!
+                </>
+              ) : (
+                <>
+                  이미지를 업로드해서
+                  <br />
+                  동화를 생성해 주세요!
+                </>
+              )}
             </StoryTitle>
           )}
         </RightCard>
@@ -500,12 +563,22 @@ const GetStarted = ({ user }: GetStartedProps) => {
                 <PreviewBtn onClick={stopPreview}>⏹ 정지</PreviewBtn>
               )}
             </VoiceSection>
-            <ButtonRow style={{ maxWidth: "720px" }}>
-              <Btn onClick={handleAnalyzeClick} disabled={loading}>
-                재생성
-              </Btn>
-              <Btn onClick={handleSaveImageClick}>동화 저장</Btn>
-            </ButtonRow>
+            {!isDemoMode && (
+              <ButtonRow style={{ maxWidth: "720px" }}>
+                <Btn onClick={handleAnalyzeClick} disabled={loading}>
+                  재생성
+                </Btn>
+                <Btn onClick={handleSaveImageClick}>동화 저장</Btn>
+              </ButtonRow>
+            )}
+            {isDemoMode && (
+              <ButtonRow style={{ maxWidth: "720px" }}>
+                <Btn onClick={handleAnalyzeClick} disabled={loading}>
+                  재생성
+                </Btn>
+                <Btn onClick={() => navigate("/get-started")}>정식 체험하기</Btn>
+              </ButtonRow>
+            )}
           </>
         )}
       </RightPanel>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import backgroundImage from "../photos/homebackground.png";
 import { User } from "../types/user";
 
@@ -60,7 +60,7 @@ const BodyText = styled.p`
 
 const Button = styled(NavLink)`
   display: inline-block;
-  margin-top: 36px;
+  margin-top: 0;
   padding: 12px 32px;
   text-decoration: none;
   background: #bdc2bb;
@@ -81,6 +81,45 @@ const Button = styled(NavLink)`
 
   @media (max-width: 768px) {
     margin-top: 24px;
+    padding: 11px 28px;
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 36px;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    margin-top: 24px;
+    gap: 10px;
+  }
+`;
+
+const DemoButton = styled.button`
+  display: inline-block;
+  padding: 12px 32px;
+  text-decoration: none;
+  background: #bdc2bb;
+  border: 2px solid #bdc2bb;
+  font-weight: bold;
+  border-radius: 8px;
+  color: white;
+  font-size: clamp(1em, 2.5vw, 1.25em);
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    background: #fff;
+    color: #abb7b7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  }
+
+  @media (max-width: 768px) {
     padding: 11px 28px;
   }
 `;
@@ -168,17 +207,24 @@ interface HomeProps {
 }
 
 const Home = ({ user }: HomeProps) => {
+  const navigate = useNavigate();
+
+  const handleDemoClick = () => {
+    navigate(user ? '/get-started?demo=true' : '/login');
+  };
+
   return (
     <Style>
       <h1>아이들 그림을 통해<MobileBr/>이야기를 생성해 보세요!</h1>
       <BodyText>
         아이들 그림을 저장하고, 그림을 업로드하면 이야기를 생성할 수 있습니다.
       </BodyText>
-      {user ? (
-        <Button to="/get-started">실습하기</Button>
-      ) : (
-        <Button to="/login">로그인</Button>
-      )}
+      <ButtonGroup>
+        <DemoButton onClick={handleDemoClick}>
+          데모이미지로 바로 체험하기
+        </DemoButton>
+        {user ? <Button to="/get-started">실습하기</Button> : <Button to="/login">로그인</Button>}
+      </ButtonGroup>
       <Cards>
         <Card>
           <h2>그림 저장</h2>
